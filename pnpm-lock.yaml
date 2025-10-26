@@ -33,6 +33,9 @@ importers:
       svelte-check:
         specifier: ^4.3.2
         version: 4.3.3(picomatch@4.0.3)(svelte@5.39.12)(typescript@5.9.3)
+      svelte-hamburgers:
+        specifier: ^5.0.0
+        version: 5.0.0(svelte@5.39.12)
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
@@ -532,6 +535,11 @@ packages:
       svelte: ^4.0.0 || ^5.0.0-next.0
       typescript: '>=5.0.0'
 
+  svelte-hamburgers@5.0.0:
+    resolution: {integrity: sha512-MMb47VCozKDgn/jtmeqw+CbI3cZmkDXd/FG3VCkReMdw2YCSOaWYLsqsXiWTWoQE/oSmw1vH/Tm5mChqlsldHQ==}
+    peerDependencies:
+      svelte: ^5.0.0
+
   svelte-meta-tags@4.5.0:
     resolution: {integrity: sha512-E1/ULp4j8qwYFQeYBR0WypgOIsZkOnywAExFhufyl07eTvyCDQVW1HaNTSA0n2sX/Hw0jtti+TKuOml5dt2v9A==}
     peerDependencies:
@@ -993,6 +1001,10 @@ snapshots:
       typescript: 5.9.3
     transitivePeerDependencies:
       - picomatch
+
+  svelte-hamburgers@5.0.0(svelte@5.39.12):
+    dependencies:
+      svelte: 5.39.12
 
   svelte-meta-tags@4.5.0(svelte@5.39.12):
     dependencies:

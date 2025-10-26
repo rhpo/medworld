@@ -19,6 +19,7 @@
   style={`${color ? `background-color: ${color};` : ""}`}
 >
   <View align="row" style="width: 100%; justify-content: space-between;">
+    <!-- made this to simulate an element, helps for flex justify content space-betweeen -->
     <div></div>
 
     <p class="message">
@@ -50,6 +51,8 @@
     text-align: center;
 
     width: 100%;
+    overflow: hidden;
+
     display: flex;
     align-items: center;
     justify-content: space-between;

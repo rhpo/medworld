@@ -24,11 +24,12 @@ body {
   background-color: var(--color-bg);
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Amiri&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Tifinagh&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 :root {
   /* notification */
@@ -61,6 +62,7 @@ body {
 
   /* Typography */
   --font-serif: "Playfair Display", "Amiri", "Noto Sans Tifinagh", serif;
+  --font-cool: "Raleway", sans-serif;
   --font-sans: "Inter", "Amiri", "Noto Sans Tifinagh", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
@@ -81,7 +83,7 @@ body {
 
   /* for hamburger */
   --padding: 0;
-  --color: var(--white);
+  --color: var(--color-primary-darker);
 
   --nav-height: 92px;
 }
@@ -278,7 +280,7 @@ h3 {
 
 a,
 a:visited {
-  color: var(--primary);
+  color: var(--color-primary-darker);
   text-decoration: none;
   transition: color var(--transition-normal);
 }
