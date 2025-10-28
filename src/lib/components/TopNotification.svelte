@@ -45,20 +45,20 @@
   }
 
   .notification {
-    background-color: var(--color-primary-darker);
     color: white;
     text-align: center;
+    background-color: var(--color-primary-darker);
+    box-shadow: inset 0 -4px 12px rgba(var(--shadow-color-rgb), 0.1);
 
     width: 100%;
+    height: var(--notification-height);
+
     display: flex;
     align-items: center;
     justify-content: space-between;
 
+    overflow: hidden;
     transition: all var(--transition-duration) var(--transition-easing);
-
-    height: var(--notification-height);
-
-    box-shadow: inset 0 -4px 12px rgba(var(--shadow-color-rgb), 0.1);
   }
 
   .message {
