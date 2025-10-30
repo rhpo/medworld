@@ -20,7 +20,6 @@
     };
 
     window.addEventListener("scroll", handleScroll);
-
     handleScroll();
 
     return () => {

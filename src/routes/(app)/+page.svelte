@@ -3,7 +3,7 @@
   import Button from "$lib/components/ui/Button.svelte";
   import Face from "$lib/components/ui/Face.svelte";
   import View from "$lib/components/ui/View.svelte";
-  import { ArrowRight, Brain, Lightbulb } from "@lucide/svelte";
+  import { ArrowRight } from "@lucide/svelte";
 </script>
 
 <Face title="Landing Page" description={SITE_DESCRIPTION}>
