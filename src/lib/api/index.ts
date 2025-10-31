@@ -17,12 +17,16 @@ import type { Patient } from '$lib/types/users/patient';
 import type { Assistant } from '$lib/types/users/assistant';
 
 // Simulate network delay for realistic API behavior
+/**
+ * Returns a promise that resolves after a specified delay.
+ */
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Random delay between 200ms and 800ms
 const randomDelay = () => delay(Math.random() * 600 + 200);
 
 // Error simulation (1 in 10 requests will fail)
+/** Simulates an error with a 10% chance of throwing an API error. */
 const simulateError = () => {
     if (Math.random() < 0.1) {
         throw new Error('API Error: Request failed');
