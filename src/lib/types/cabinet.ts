@@ -1,12 +1,22 @@
-import type { User, UserType, Users } from "./users/";
+import type { User, Users } from "./users";
 
-export type Cabinet = {
-  id: string;
-  name: string;
-  date: Date;
-  doctor: any;
-  manager: User<Users.SuperAdmin> | User<Users.Admin>;
-  assistant: User<Users.Assistant>;
-  patient: User<Users.Patient>;
-  owner: User<Users.Admin>;
-};
+export interface Cabinet {
+    id: number;
+    name: string;
+    address: string;
+    phone: string;
+    createdAt: Date;
+
+    // Links
+    admin: User<Users.Admin>;
+    doctors: User<Users.Doctor>[];
+    assistants: User<Users.Assistant>[];
+
+    // Pack info
+    premiumPack?: string;
+
+    // General Settings
+    openingHours?: Record<string, { open: string; close: string }>;
+    consultationDuration?: number; // in minutes
+    isClosed?: boolean;
+}

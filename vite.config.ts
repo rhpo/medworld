@@ -6,4 +6,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ["@lucide/svelte"],
   },
+  server: {
+    allowedHosts: ["localhost", "d096ab60cc8e.ngrok-free.app"]
+  }
 });

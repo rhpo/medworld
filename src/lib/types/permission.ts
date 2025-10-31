@@ -25,6 +25,7 @@ export type Permission =
     'add_assistant' |
     'edit_assistant' |
     'remove_assistant' |
+    'assign_assistant' |
 
     // Patient
     'view_patient' |
@@ -111,7 +112,10 @@ export const DoctorPermissions: Permission[] = [
     ...PatientManagement,
 
     // Gestion de consultations
-    ...ConsultationManagement
+    ...ConsultationManagement,
+
+    'assign_assistant'
+
 ];
 
 export const SuperAdminPermissions: Permission[] = [

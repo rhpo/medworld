@@ -1,0 +1,81 @@
+<script lang="ts">
+    import { AllAPI, CabinetAPI, DoctorAPI } from "$lib/api";
+    import Block from "$lib/components/ui/Block.svelte";
+    import IconButton from "$lib/components/ui/IconButton.svelte";
+    import type { Permission } from "$lib/types/permission";
+    import { Users, type User } from "$lib/types/users";
+    import type { Doctor } from "$lib/types/users/doctor";
+    import { Trash, Unlink, Unlink2 } from "@lucide/svelte";
+    import { onMount } from "svelte";
+
+    let {
+        user,
+        permissions,
+    }: {
+        user: Doctor;
+        permissions: Permission[];
+    } = $props();
+
+    let assistants: User<Users.Assistant>[] = $state([]);
+
+    onMount(async () => {
+        if (user.type === Users.Doctor) {
+            assistants = user.assistants;
+        } else {
+            assistants = await AllAPI.listAllAssistants();
+        }
+    });
+</script>
+
+<main>
+    <Block title="Manage Assistants">
+        <table>
+            <thead>
+                <tr>
+                    <th>Avatar</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {#each assistants as assistant}
+                    <tr>
+                        <td>
+                            <img
+                                src={assistant.avatarUrl ||
+                                    "/default-avatar.png"}
+                                alt="Avatar"
+                                class="avatar"
+                            />
+                        </td>
+                        <td>{assistant.getFullName()}</td>
+                        <td>{assistant.email}</td>
+                        <td>{assistant.phoneNumber || "N/A"}</td>
+                        <td class="actions">
+                            {#if permissions.includes("edit_assistant")}
+                                <button>Edit</button>
+                            {/if}
+
+                            {#if permissions.includes("assign_assistant")}
+                                <IconButton
+                                    Icon={Unlink}
+                                    type="error"
+                                    label="Unlink Assistant"
+                                />
+                            {/if}
+                        </td>
+                    </tr>
+                {/each}
+            </tbody>
+        </table>
+    </Block>
+</main>
+
+<style>
+    .actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+</style>

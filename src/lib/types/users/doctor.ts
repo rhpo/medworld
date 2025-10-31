@@ -1,13 +1,14 @@
 import type { User, Users } from ".";
+import type { Cabinet } from "../cabinet";
 import type { Calendar } from "../calendar";
+import type { Consultation } from "../consultation";
 import type { Message } from "../message";
 import type { Review } from "../reviews";
 import type { Speciality } from "../speciality";
 
 export interface Doctor extends User<Users.Doctor> {
-    type: Users.Doctor,
-
-    speciality: Speciality,
+    // Speciality
+    speciality: Speciality;
 
     // Dates
     dateOfBirth: Date;
@@ -22,6 +23,16 @@ export interface Doctor extends User<Users.Doctor> {
     // Calendars at different cabinets
     calendars: Calendar[];
 
+    // Consultationss
+    consultations: Consultation[];
+
+    // Cabinets
+    cabinets: Cabinet[];
+
+    // Assistants
+    assistants: User<Users.Assistant>[];
+
     // To Calculate Years Of Experience
-    getYearsOfExperience(start: Date): number;
+    getYearsOfExperience(): number;
+
 }

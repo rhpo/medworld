@@ -1,16 +1,16 @@
 <script lang="ts">
     interface IProps {
-        title: String;
+        title?: string;
         children?: any;
     }
 
-    let { title, children }: IProps = $props();
+    let { title = "", children }: IProps = $props();
 </script>
 
 <main>
-    <h2>
-        {title}
-    </h2>
+    {#if title}
+        <h2>{title}</h2>
+    {/if}
 
     <div class="container">
         {#if children}
@@ -23,11 +23,15 @@
     main {
         display: flex;
         flex-direction: column;
-        gap: 2rem;
+        gap: 0;
+    }
+
+    h2 + .container {
+        margin-top: 2rem;
     }
 
     h2 {
-        font-family: var(--font-sans);
+        font-family: var(--font-secondary);
         margin: 0;
     }
 

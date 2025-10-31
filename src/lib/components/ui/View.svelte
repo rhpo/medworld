@@ -1,11 +1,12 @@
 <script lang="ts">
-  interface Props {
+  import type { HTMLAttributes } from "svelte/elements";
+
+  interface Props extends HTMLAttributes<HTMLDivElement> {
     children?: import("svelte").Snippet;
     align?: "row" | "column" | "default";
     center?: boolean;
     screen?: boolean;
     main?: boolean; // For main layout
-    [key: string]: any; // Allow other attributes
   }
 
   let {
@@ -36,7 +37,9 @@
     max-width: var(--container-max);
     margin: 0 auto;
     padding: 0 24px;
-    height: 100%;
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    display: flex;
+    flex-direction: column;
 
     transition: height var(--transition-duration) var(--transition-easing);
   }

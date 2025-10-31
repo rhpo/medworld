@@ -101,7 +101,7 @@
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: var(--border-radius-md);
-    font-family: var(--font-sans);
+    font-family: var(--font-secondary);
     font-weight: 500;
     font-size: 0.95rem;
     text-decoration: none;

@@ -1,8 +1,16 @@
 import type { Appointment } from "./appointment";
-import type { User, Users } from "./users/";
+import type { User, Users } from "./users";
 
-export type Consultation = {
+export interface Consultation {
+    id: number;
     doctor: User<Users.Doctor>;
     patient: User<Users.Patient>;
-    attachment: Appointment;
+    appointment: Appointment;
+
+    notes: string;
+    prescriptions: string[];
+    attachments?: string[]; // file URLs
+
+    createdAt: Date;
+    updatedAt?: Date;
 }

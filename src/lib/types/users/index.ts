@@ -20,7 +20,7 @@ export interface User<T extends UserType> {
     email: string;
     password?: string;
     phoneNumber: string;
+    avatarUrl?: string;
 
     getFullName(): string;
-
 }
