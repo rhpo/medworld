@@ -14,9 +14,18 @@ importers:
       aos:
         specifier: ^2.3.4
         version: 2.3.4
+      svelte-hamburgers:
+        specifier: ^5.0.0
+        version: 5.0.0(svelte@5.39.12)
       svelte-meta-tags:
         specifier: ^4.5.0
         version: 4.5.0(svelte@5.39.12)
+      sveltejs-tippy:
+        specifier: ^3.0.0
+        version: 3.0.0
+      vanilla-tilt-svelte:
+        specifier: ^1.0.4
+        version: 1.0.4
     devDependencies:
       '@sveltejs/adapter-auto':
         specifier: ^6.1.0
@@ -27,6 +36,9 @@ importers:
       '@sveltejs/vite-plugin-svelte':
         specifier: ^6.2.0
         version: 6.2.1(svelte@5.39.12)(vite@7.1.9)
+      '@types/aos':
+        specifier: ^3.0.7
+        version: 3.0.7
       svelte:
         specifier: ^5.39.5
         version: 5.39.12
@@ -222,6 +234,9 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
+  '@popperjs/core@2.11.8':
+    resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
+
   '@rollup/rollup-android-arm-eabi@4.52.4':
     resolution: {integrity: sha512-BTm2qKNnWIQ5auf4deoetINJm2JzvihvGb9R6K/ETwKLql/Bb3Eg2H1FBp1gUb4YGbydMA3jcmQTR73q7J+GAA==}
     cpu: [arm]
@@ -372,6 +387,9 @@ packages:
     peerDependencies:
       svelte: ^5.0.0
       vite: ^6.3.0 || ^7.0.0
+
+  '@types/aos@3.0.7':
+    resolution: {integrity: sha512-sEhyFqvKauUJZDbvAB3Pggynrq6g+2PS4XB3tmUr+mDL1gfDJnwslUC4QQ7/l8UD+LWpr3RxZVR/rHoZrLqZVg==}
 
   '@types/cookie@0.6.0':
     resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
@@ -532,6 +550,11 @@ packages:
       svelte: ^4.0.0 || ^5.0.0-next.0
       typescript: '>=5.0.0'
 
+  svelte-hamburgers@5.0.0:
+    resolution: {integrity: sha512-MMb47VCozKDgn/jtmeqw+CbI3cZmkDXd/FG3VCkReMdw2YCSOaWYLsqsXiWTWoQE/oSmw1vH/Tm5mChqlsldHQ==}
+    peerDependencies:
+      svelte: ^5.0.0
+
   svelte-meta-tags@4.5.0:
     resolution: {integrity: sha512-E1/ULp4j8qwYFQeYBR0WypgOIsZkOnywAExFhufyl07eTvyCDQVW1HaNTSA0n2sX/Hw0jtti+TKuOml5dt2v9A==}
     peerDependencies:
@@ -541,9 +564,15 @@ packages:
     resolution: {integrity: sha512-CEzwxFuEycokU8K8CE/OuwVbmei+ivu2HvBGYIdASfMa1hCRSNr4RRkzNSvbAvu6h+BOig2CsZTAEY+WKvwZpA==}
     engines: {node: '>=18'}
 
+  sveltejs-tippy@3.0.0:
+    resolution: {integrity: sha512-LAfQikm61AeqZW1hCFWUsmGEMmhMHDvrPV0JhbT38Ell9SqBjmFaY//+YKUxaJvx6nLMxGQdlcHA1rDg2Ml8tQ==}
+
   tinyglobby@0.2.15:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
     engines: {node: '>=12.0.0'}
+
+  tippy.js@6.0.3:
+    resolution: {integrity: sha512-buQF6HugTA4YeSA/s9xBhu0ferEAx7sRSn45G+Juh3p+Dz3vEKfxtqdg6JUnHIWDCV/r0u8Lrobs9AB4dtYcUQ==}
 
   totalist@3.0.1:
     resolution: {integrity: sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ==}
@@ -553,6 +582,9 @@ packages:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  vanilla-tilt-svelte@1.0.4:
+    resolution: {integrity: sha512-i/8y3f25J2uXOTRu9l7SJ7ueqJbVsF2CxGk6z48631/PlCiNbzVRKU+yvtiPONtTYTuwaPA7M9dxRVAMgjuIhQ==}
 
   vite@7.1.9:
     resolution: {integrity: sha512-4nVGliEpxmhCL8DslSAUdxlB6+SMrhB0a1v5ijlh1xB1nEPuy1mxaHxysVucLHuWryAxLWg6a5ei+U4TLn/rFg==}
@@ -710,6 +742,8 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
+  '@popperjs/core@2.11.8': {}
+
   '@rollup/rollup-android-arm-eabi@4.52.4':
     optional: true
 
@@ -825,6 +859,8 @@ snapshots:
       vitefu: 1.1.1(vite@7.1.9)
     transitivePeerDependencies:
       - supports-color
+
+  '@types/aos@3.0.7': {}
 
   '@types/cookie@0.6.0': {}
 
@@ -994,6 +1030,10 @@ snapshots:
     transitivePeerDependencies:
       - picomatch
 
+  svelte-hamburgers@5.0.0(svelte@5.39.12):
+    dependencies:
+      svelte: 5.39.12
+
   svelte-meta-tags@4.5.0(svelte@5.39.12):
     dependencies:
       schema-dts: 1.1.5
@@ -1016,14 +1056,24 @@ snapshots:
       magic-string: 0.30.19
       zimmerframe: 1.1.4
 
+  sveltejs-tippy@3.0.0:
+    dependencies:
+      tippy.js: 6.0.3
+
   tinyglobby@0.2.15:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
 
+  tippy.js@6.0.3:
+    dependencies:
+      '@popperjs/core': 2.11.8
+
   totalist@3.0.1: {}
 
   typescript@5.9.3: {}
+
+  vanilla-tilt-svelte@1.0.4: {}
 
   vite@7.1.9:
     dependencies:
