@@ -108,6 +108,9 @@ export const fakeAssistants: Assistant[] = [
 ];
 
 // Generate base user arrays
+/**
+ * Creates a Doctor object with specified details.
+ */
 const makeDoctor = (
     id: number,
     firstName: string,
