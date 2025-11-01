@@ -1,4 +1,6 @@
 <script lang="ts">
+    import tippy from "sveltejs-tippy";
+
     interface Props {
         category?: "textarea" | "input";
         theme?: "primary" | "secondary";
@@ -9,12 +11,16 @@
         error?: string;
         required?: boolean;
         name?: string;
+        showLabel?: boolean;
+        showTooltip?: boolean;
     }
 
     let {
         category = "input",
         type = "text",
         label = "",
+        showLabel = false,
+        showTooltip = false,
         theme = "primary",
         value = $bindable(""),
         placeholder = "",
@@ -22,10 +28,12 @@
         required = false,
         name = "",
     }: Props = $props();
+
+    label = label || placeholder;
 </script>
 
 <main>
-    {#if label}
+    {#if label && showLabel}
         <label for={label.toLowerCase().replace(/\s+/g, "-")}>
             {label}
         </label>
@@ -33,6 +41,7 @@
 
     {#if category === "textarea"}
         <textarea
+            use:tippy={{ content: label, placement: "auto" }}
             class="input"
             id={label.toLowerCase().replace(/\s+/g, "-")}
             bind:value
@@ -46,6 +55,7 @@
     {:else}
         <input
             class="input"
+            use:tippy={{ content: label, placement: "auto" }}
             id={label.toLowerCase().replace(/\s+/g, "-")}
             {type}
             class:primary={theme === "primary"}
@@ -64,8 +74,8 @@
 
 <style>
     main {
-        border-bottom: 1px solid var(--border-color);
         margin-bottom: 1.5rem;
+        text-align: left !important;
     }
 
     label {
@@ -88,6 +98,8 @@
         background: transparent;
         font-family: var(--font-secondary);
         color: var(--text-color);
+
+        border-bottom: 1px solid var(--border-color);
     }
 
     .input.primary:focus {
@@ -102,7 +114,7 @@
     .input.secondary {
         width: 100%;
         padding: 12px 16px;
-        border: 1px solid var(--border-color);
+        border: 2px solid var(--border-color);
         border-radius: 8px;
 
         font-size: 16px;
@@ -114,7 +126,7 @@
 
     .input.secondary:focus {
         outline: none;
-        border-color: var(--text-color);
+        border-color: 3px solid var(--border-color);
     }
 
     .input.secondary::placeholder {

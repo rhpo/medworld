@@ -17,7 +17,7 @@
     import type { Doctor } from "$lib/types/users/doctor";
     import { onMount } from "svelte";
 
-    let currentDemoAccountType: UserType = "doctor";
+    let currentDemoAccountType: UserType = Users.Doctor;
 
     onMount(() => {
         user.set(fakeDoctors[0]);

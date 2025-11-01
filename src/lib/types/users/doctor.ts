@@ -32,6 +32,10 @@ export interface Doctor extends User<Users.Doctor> {
     // Assistants
     assistants: User<Users.Assistant>[];
 
+    // Price of consultations (per doctor)
+    consultationPrice: number;
+    consultationDuration: number; // in minutes
+
     // To Calculate Years Of Experience
     getYearsOfExperience(): number;
 

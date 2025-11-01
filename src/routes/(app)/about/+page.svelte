@@ -1,11 +1,14 @@
 <script lang="ts">
     import View from "$lib/components/ui/View.svelte";
     import Button from "$lib/components/ui/Button.svelte";
+    import LogoFull from "$lib/components/LogoFull.svelte";
 </script>
 
 <main>
     <View data-aos="fade-up">
         <div class="about-container">
+            <LogoFull />
+
             <div class="mission-section">
                 <div
                     class="cta-section"
@@ -104,9 +107,11 @@
 
 <style>
     .about-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem 1rem;
+        padding: 4rem 0;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .mission-section {
@@ -170,7 +175,7 @@
     .cta-section {
         text-align: center;
         background: var(--color-background-secondary);
-        padding: 4rem 2rem;
+        padding: 2rem 0;
         border-radius: var(--border-radius-lg);
 
         margin-bottom: 4rem;

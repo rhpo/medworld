@@ -17,6 +17,7 @@
   import TopNotification from "$lib/components/TopNotification.svelte";
 
   import { Hamburger } from "svelte-hamburgers";
+  import { page } from "$app/state";
   let { children } = $props();
 
   let isFull = $state(false);
@@ -73,14 +74,23 @@
         <div class="actions">
           <div class="desktop desktop-actions">
             <div class:invisible={!isFull}>
-              <Button category="third" href="accounts/login">Log in</Button>
+              <Button
+                category="third"
+                href="/accounts/login"
+                style="display: {page.url.pathname === '/accounts/login'
+                  ? 'none'
+                  : 'block'}">Log in</Button
+              >
             </div>
 
             <Button
               Icon={Lightbulb}
               large
               href="/accounts/create"
-              style="width: 100%;">Get started</Button
+              style="width: 100%; display: {page.url.pathname ===
+              '/accounts/create'
+                ? 'none'
+                : 'block'}">Get started</Button
             >
           </div>
 
@@ -198,8 +208,15 @@
   /* END-MENU */
 
   /* LOGO */
+  .logo {
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
   .logo * {
-    font-family: var(--font-cool);
     transition: all var(--transition-duration) var(--transition-easing);
   }
 
@@ -245,14 +262,6 @@
 
   .items li {
     font-size: 1.2rem;
-  }
-
-  .logo {
-    height: 60px;
-
-    display: flex;
-    align-items: center;
-    gap: 1rem;
   }
 
   /* MAIN PARENT */

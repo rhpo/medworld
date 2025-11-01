@@ -211,6 +211,11 @@
     position: relative;
     height: 100%;
     background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.776));
+
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    height: 100%;
   }
 
   .hero h1 {
@@ -236,13 +241,6 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
-  }
-
-  .hero {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100%;
   }
 
   .actions {

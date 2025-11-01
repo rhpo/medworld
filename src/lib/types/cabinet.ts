@@ -1,3 +1,4 @@
+import type { Rating } from "./rating";
 import type { User, Users } from "./users";
 
 export interface Cabinet {
@@ -12,11 +13,14 @@ export interface Cabinet {
     doctors: User<Users.Doctor>[];
     assistants: User<Users.Assistant>[];
 
-    // Pack info
-    premiumPack?: string;
+    ratings: Rating[];
+
+    // General Information
+    image?: string;
+    accessHandicap: boolean;
 
     // General Settings
-    openingHours?: Record<string, { open: string; close: string }>;
-    consultationDuration?: number; // in minutes
+    openingHours: Record<string, { open: string; close: string }>;
+
     isClosed?: boolean;
 }

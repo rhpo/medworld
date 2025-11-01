@@ -2,7 +2,7 @@
     import Button from "$lib/components/ui/Button.svelte";
     import Input from "$lib/components/ui/Input.svelte";
     import { Users, type User } from "$lib/types/users";
-    import { User as UserIcon } from "@lucide/svelte";
+    import { User as UserIcon, UserPlus } from "@lucide/svelte";
 
     let data: User<Users.Patient> = $state({
         id: 0,
@@ -22,40 +22,51 @@
     }
 </script>
 
-<main class="auth-container">
+<main class="auth-container" data-aos="fade-up" data-aos-duration="1200">
     <!-- Left Side -->
     <section class="left">
         <div class="overlay"></div>
     </section>
 
     <!-- Right Side -->
-    <section class="right">
+    <section class="right" data-aos="flip-right" data-aos-duration="1200">
         <div class="form-container">
+            <UserPlus size="72" style="margin-bottom: 1rem;" />
+
             <h2>Create your account</h2>
+
             <Input
                 bind:value={data.firstName}
                 placeholder="First Name"
                 type="text"
+                theme="secondary"
                 required
             />
+
             <Input
                 bind:value={data.lastName}
                 placeholder="Last Name"
                 type="text"
+                theme="secondary"
                 required
             />
+
             <Input
                 bind:value={data.email}
                 placeholder="Email"
                 type="email"
+                theme="secondary"
                 required
             />
+
             <Input
                 bind:value={data.phoneNumber}
                 placeholder="Phone Number"
                 type="tel"
+                theme="secondary"
                 required
             />
+
             <Button
                 onClick={() => {
                     signUp();
@@ -89,12 +100,6 @@
     }
 
     .overlay {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-
         width: 100%;
         height: 100%;
 
@@ -115,6 +120,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
+
+        padding: 2rem 0;
     }
 
     .form-container {

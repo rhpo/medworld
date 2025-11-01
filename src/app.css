@@ -7,7 +7,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Momo+Signature&display=swap');
 
 html {
-  height: fit-content;
+  min-height: fit-content;
 }
 
 html,
@@ -125,14 +125,6 @@ html,
 body {
   overflow-x: hidden;
 } */
-
-html,
-body {
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  margin: 0;
-}
 
 /* ========== ajouter le lissage de poluce ========== */
 html {
