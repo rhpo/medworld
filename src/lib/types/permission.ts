@@ -136,6 +136,10 @@ export const AdminPermissions: Permission[] = [
 
     // Modifier Cabinet
     'edit_cabinet',
+    'add_doctor',
+    'edit_doctor',
+    'set_admin_doctor'
+
 ];
 
 export const AssistantPermissions: Permission[] = [

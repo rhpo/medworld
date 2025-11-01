@@ -1,17 +1,26 @@
 <script lang="ts">
     import { Search } from "@lucide/svelte";
+    import type { HTMLAttributes } from "svelte/elements";
+
+    interface IProps extends HTMLAttributes<HTMLElement> {
+        placeholder?: string;
+        value?: string;
+        searchInput?: any;
+        onSearch?: (() => any) | ((e: string) => any);
+    }
 
     let {
         placeholder = "Rechercher un livre...",
-        onSearch = () => {},
+        onSearch = (e: any) => {},
         value = $bindable(""),
         searchInput = $bindable(),
-    } = $props();
+        ...rest
+    }: IProps = $props();
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<main onclick={() => searchInput.focus()}>
+<main onclick={() => searchInput?.focus()} {...rest}>
     <input
         type="text"
         {placeholder}
@@ -41,18 +50,18 @@
 
     main {
         width: 100%;
-        max-width: 56rem;
         display: inline-flex;
         align-items: center;
 
-        background-color: var(--background-secondary);
-
-        border-radius: 50px;
+        background-color: var(--background-primary);
+        border: 1px solid var(--color-primary);
+        border-radius: 20px;
 
         cursor: text;
 
         height: 60px;
         padding: 0.3rem 0;
+        transition: all var(--transition-duration) var(--transition-easing);
     }
 
     main input {
@@ -67,6 +76,10 @@
 
     main input:focus {
         outline: none;
+    }
+
+    main:hover {
+        border: 3px solid var(--color-primary);
     }
 
     main input::placeholder {

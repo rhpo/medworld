@@ -12,10 +12,6 @@
     let permissions = getPermissionsFromUserType(doctor.type);
 </script>
 
-<h1>
-    Welcome, Dr. {doctor.firstName}
-</h1>
-
 <main>
     <!-- Show Blocks based on the permissions that the doctor has -->
     {#if permissions.find((e) => e.endsWith("_patient"))}
@@ -32,7 +28,7 @@
         padding-top: 2rem;
         display: flex;
         flex-direction: column;
-        gap: 2rem;
+        gap: 4rem;
         margin-bottom: 4rem;
     }
 </style>

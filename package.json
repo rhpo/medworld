@@ -26,6 +26,7 @@
 		"aos": "^2.3.4",
 		"svelte-hamburgers": "^5.0.0",
 		"svelte-meta-tags": "^4.5.0",
+		"sveltejs-tippy": "^3.0.0",
 		"vanilla-tilt-svelte": "^1.0.4"
 	}
 }

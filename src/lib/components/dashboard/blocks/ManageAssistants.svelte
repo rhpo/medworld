@@ -1,11 +1,12 @@
 <script lang="ts">
-    import { AllAPI, CabinetAPI, DoctorAPI } from "$lib/api";
+    import { AllAPI } from "$lib/api";
+    import Avatar from "$lib/components/ui/Avatar.svelte";
     import Block from "$lib/components/ui/Block.svelte";
     import IconButton from "$lib/components/ui/IconButton.svelte";
     import type { Permission } from "$lib/types/permission";
     import { Users, type User } from "$lib/types/users";
     import type { Doctor } from "$lib/types/users/doctor";
-    import { Trash, Unlink, Unlink2 } from "@lucide/svelte";
+    import { Unlink } from "@lucide/svelte";
     import { onMount } from "svelte";
 
     let {
@@ -43,11 +44,10 @@
                 {#each assistants as assistant}
                     <tr>
                         <td>
-                            <img
-                                src={assistant.avatarUrl ||
-                                    "/default-avatar.png"}
-                                alt="Avatar"
-                                class="avatar"
+                            <Avatar
+                                size="48px"
+                                avatarUrl={assistant.avatarUrl}
+                                alt={assistant.getFullName()}
                             />
                         </td>
                         <td>{assistant.getFullName()}</td>

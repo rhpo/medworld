@@ -1,8 +1,11 @@
 <script lang="ts">
     import { DoctorAPI } from "$lib/api";
+    import Avatar from "$lib/components/ui/Avatar.svelte";
     import Block from "$lib/components/ui/Block.svelte";
+    import IconButton from "$lib/components/ui/IconButton.svelte";
     import SearchInput from "$lib/components/ui/SearchInput.svelte";
     import type { User, Users } from "$lib/types/users";
+    import { Eye } from "@lucide/svelte";
     import { onMount } from "svelte";
 
     interface IProps {
@@ -40,7 +43,7 @@
     </div>
 
     {#if filteredPatients.length === 0}
-        <h2>No patients found.</h2>
+        <h3>No patients found.</h3>
     {:else}
         <table>
             <thead>
@@ -56,16 +59,21 @@
                 {#each filteredPatients as patient}
                     <tr>
                         <td>
-                            <img
-                                src={patient.avatarUrl || "/default-avatar.png"}
-                                alt="{patient.getFullName()}'s avatar"
+                            <Avatar
+                                size="48px"
+                                avatarUrl={patient.avatarUrl}
+                                alt={patient.getFullName()}
                             />
                         </td>
                         <td>{patient.getFullName()}</td>
                         <td>{patient.email}</td>
                         <td>{patient.phoneNumber || "N/A"}</td>
                         <td>
-                            <button>View</button>
+                            <IconButton
+                                Icon={Eye}
+                                label="View Patient"
+                                href="/dashboard/users/{patient.id}"
+                            />
                         </td>
                     </tr>
                 {/each}
@@ -73,3 +81,11 @@
         </table>
     {/if}
 </Block>
+
+<style>
+    h3 {
+        font-size: 2rem;
+        font-weight: 300;
+        text-align: center;
+    }
+</style>

@@ -1,4 +1,7 @@
 <script lang="ts">
+    import type { User } from "$lib/types/users";
+    import Avatar from "./Avatar.svelte";
+
     interface IProps {
         title?: string;
         children?: any;
@@ -8,9 +11,7 @@
 </script>
 
 <main>
-    {#if title}
-        <h2>{title}</h2>
-    {/if}
+    <h2>{title}</h2>
 
     <div class="container">
         {#if children}
@@ -27,12 +28,14 @@
     }
 
     h2 + .container {
-        margin-top: 2rem;
+        margin-top: 1.2rem;
     }
 
     h2 {
         font-family: var(--font-secondary);
         margin: 0;
+        font-size: 2.5rem;
+        font-weight: 300;
     }
 
     .container {

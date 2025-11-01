@@ -1,16 +1,18 @@
 <script lang="ts">
+    // @ts-ignore
+    import tippy from "sveltejs-tippy";
     import type { Snippet } from "svelte";
+    import type { HTMLAttributes } from "svelte/elements";
 
-    interface Props {
+    interface Props extends HTMLAttributes<HTMLDivElement> {
         type?: "primary" | "secondary" | "error";
         href?: string;
         label?: string;
         autoWidth?: boolean;
         Icon?: any;
+        color?: string;
         onClick?: () => void;
         children?: Snippet;
-        selected?: boolean;
-        [key: string]: any;
     }
 
     let {
@@ -19,20 +21,29 @@
         label = "",
         autoWidth = false,
         Icon,
+        color = "",
         onClick = () => {},
-        selected = false,
         children,
         ...rest
     }: Props = $props();
+
+    let tooltipProps = {
+        content: label,
+        placement: "top",
+    };
 </script>
 
 {#if href}
     <a
         class="button"
+        use:tippy={tooltipProps}
         aria-label="Panier"
+        class:primary={type === "primary"}
+        class:secondary={type === "secondary"}
+        class:error={type === "error"}
         class:auto-width={autoWidth}
+        style={color ? `background-color: ${color} !important;` : ""}
         {href}
-        class:selected
         {...rest}
     >
         {@render children?.()}
@@ -45,9 +56,13 @@
     <button
         class="button {type}"
         aria-label="Panier"
+        use:tippy={tooltipProps}
         class:auto-width={autoWidth}
         onclick={onClick}
-        class:selected
+        class:primary={type === "primary"}
+        class:secondary={type === "secondary"}
+        class:error={type === "error"}
+        style={color ? `background-color: ${color} !important;` : ""}
         {...rest}
     >
         {@render children?.()}
@@ -89,35 +104,17 @@
         background: var(--color-secondary);
         color: var(--text-primary);
         transform: translateY(-2px);
+        filter: brightness(1.1);
     }
 
     .button.primary {
-        border: var(--border-icon) solid var(--border);
+        background: var(--color-primary);
+        color: var(--white);
     }
 
-    .button:hover {
-        border-color: var(--primary);
-        color: var(--primary);
-        transform: translateY(-2px);
-    }
-
-    .button.selected {
-        background: var(--primary) !important;
-        color: var(--primary) !important;
-        transform: scale(1.05) rotate(5deg) translateY(-2px);
-        border: var(--border-icon) solid var(--primary) !important;
-    }
-
-    .button.selected :global(svg) {
-        fill: var(--white) !important;
-        transform: scale(1.2);
-        transition: all var(--transition-normal);
-    }
-
-    .button.selected:hover {
-        background: var(--primary);
-        color: var(--white) !important;
-        transform: scale(1.05) rotate(5deg) translateY(-2px);
+    .button.primary:hover {
+        background: var(--color-primary-dark);
+        color: var(--white);
     }
 
     .button.secondary {

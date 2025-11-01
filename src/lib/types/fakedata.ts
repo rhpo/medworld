@@ -121,6 +121,7 @@ const makeDoctor = (
     lastName,
     email,
     phoneNumber,
+    avatarUrl: 'https://i.pravatar.cc/50',
     type: Users.Doctor,
     speciality,
     dateOfBirth: new Date('1980-01-01'),
@@ -129,6 +130,7 @@ const makeDoctor = (
     reviews: [],
     calendars: [],
     consultations: [],
+    cabinets: [],
     assistants: [], // Will be populated after creating relationships
     getFullName: () => `${firstName} ${lastName}`,
     getYearsOfExperience: () => {
