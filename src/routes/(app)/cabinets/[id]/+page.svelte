@@ -14,20 +14,15 @@
     } from "@lucide/svelte";
 
     import { fakeCabinets } from "$lib/types/fakedata";
-    import { onMount } from "svelte";
-    import { page } from "$app/stores";
+    import { page } from "$app/state";
     import type { Cabinet } from "$lib/types/cabinet";
-    import type { User, Users } from "$lib/types/users";
+    import type { Doctor } from "$lib/types/users/doctor";
 
     // get id from route params and load the matching cabinet
-    const cabinetId = Number($page.params.id);
+    const cabinetId = Number(page.params.id);
+
     let cabinet: Cabinet =
         fakeCabinets.find((c) => c.id === cabinetId) ?? fakeCabinets[0];
-
-    // (optional) if you want to fetch from an API on mount, do it here.
-    onMount(() => {
-        // e.g. fetch(`/api/cabinets/${cabinetId}`).then(...)
-    });
 
     const weekDays = [
         "Sunday",
@@ -65,13 +60,6 @@
                         <div class="info-item">
                             <Phone size={20} />
                             <span>{cabinet.phone}</span>
-                        </div>
-                        <div class="info-item">
-                            <Shield size={20} />
-                            <span
-                                >Premium Pack: {cabinet.premiumPack ||
-                                    "None"}</span
-                            >
                         </div>
                     </div>
                 </Block>
@@ -149,10 +137,16 @@
                             </div>
                             <div class="settings-info">
                                 <div class="settings-label">
-                                    Default Duration
+                                    Average Consultation Duration
                                 </div>
                                 <div class="settings-value">
-                                    {cabinet.consultationDuration} minutes
+                                    {(cabinet.doctors.reduce(
+                                        ((prevDoctor: Doctor, doctor: Doctor) =>
+                                            prevDoctor.consultationDuration +
+                                            doctor.consultationDuration) as any,
+                                        0,
+                                    ) as any as number) /
+                                        cabinet.doctors.length} minutes
                                 </div>
                             </div>
                         </div>

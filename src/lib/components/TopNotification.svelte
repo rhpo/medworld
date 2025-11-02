@@ -74,4 +74,11 @@
   .hidden {
     height: 0;
   }
+
+  @media screen and (max-width: 768px) {
+    .message {
+      padding: 0.2rem 0.5rem;
+      font-size: 8px;
+    }
+  }
 </style>

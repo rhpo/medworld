@@ -72,6 +72,7 @@
                             <IconButton
                                 Icon={Eye}
                                 label="View Patient"
+                                target="_blank"
                                 href="/dashboard/users/{patient.id}"
                             />
                         </td>

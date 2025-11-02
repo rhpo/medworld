@@ -21,3 +21,26 @@ export const enum Speciality {
     EMERGENCY_MEDICINE = "Emergency Medicine",
     OBSTETRICS_GYNECOLOGY = "Obstetrics & Gynecology",
 }
+
+export const Specialities: Speciality[] = [
+    Speciality.UROLOGY,
+    Speciality.ONCOLOGY,
+    Speciality.NEUROLOGY,
+    Speciality.RADIOLOGY,
+    Speciality.PSYCHIATRY,
+    Speciality.CARDIOLOGY,
+    Speciality.PEDIATRICS,
+    Speciality.DERMATOLOGY,
+    Speciality.ORTHOPEDICS,
+    Speciality.PULMONOLOGY,
+    Speciality.RHEUMATOLOGY,
+    Speciality.ENDOCRINOLOGY,
+    Speciality.OPHTHALMOLOGY,
+    Speciality.ANESTHESIOLOGY,
+    Speciality.SURGERY_GENERAL,
+    Speciality.FAMILY_MEDICINE,
+    Speciality.GASTROENTEROLOGY,
+    Speciality.INTERNAL_MEDICINE,
+    Speciality.EMERGENCY_MEDICINE,
+    Speciality.OBSTETRICS_GYNECOLOGY,
+]

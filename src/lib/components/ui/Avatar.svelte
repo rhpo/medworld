@@ -11,7 +11,7 @@
         original?: boolean;
     } = $props();
 
-    let realAlt = $derived(alt.split(" ")[0][0] + alt.split(" ")[1][0]);
+    let realAlt = $derived(alt.split(" ")[0][0] + (alt.split(" ")[1] || "")[0]);
 
     function getColorFromAlt(alt: string) {
         let hash = 0;

@@ -8,6 +8,7 @@
         type?: "primary" | "secondary" | "error";
         href?: string;
         label?: string;
+        target?: "_blank" | "_self" | "_parent" | "_top" | "framename";
         autoWidth?: boolean;
         Icon?: any;
         color?: string;
@@ -20,6 +21,7 @@
         href = "",
         label = "",
         autoWidth = false,
+        target = "_self",
         Icon,
         color = "",
         onClick = () => {},
@@ -44,6 +46,7 @@
         class:auto-width={autoWidth}
         style={color ? `background-color: ${color} !important;` : ""}
         {href}
+        {target}
         {...rest}
     >
         {@render children?.()}

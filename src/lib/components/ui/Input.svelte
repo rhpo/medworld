@@ -29,7 +29,7 @@
         name = "",
     }: Props = $props();
 
-    label = label || placeholder;
+    label = label || placeholder || "Enter text here...";
 </script>
 
 <main>

@@ -2,11 +2,13 @@
     import { AllAPI } from "$lib/api";
     import Avatar from "$lib/components/ui/Avatar.svelte";
     import Block from "$lib/components/ui/Block.svelte";
+    import Button from "$lib/components/ui/Button.svelte";
     import IconButton from "$lib/components/ui/IconButton.svelte";
     import type { Permission } from "$lib/types/permission";
-    import { Users, type User } from "$lib/types/users";
+    import type { IUser } from "$lib/types/users";
     import type { Admin } from "$lib/types/users/admin";
-    import { Crown, Edit, Edit2, Pen } from "@lucide/svelte";
+    import type { Doctor } from "$lib/types/users/doctor";
+    import { Crown, Pen, Plus } from "@lucide/svelte";
     import { onMount } from "svelte";
 
     // props: accept any user shape to avoid strict Admin typing here
@@ -14,11 +16,11 @@
         user,
         permissions,
     }: {
-        user: Admin;
+        user: IUser;
         permissions: Permission[];
     } = $props();
 
-    let doctors: User<Users.Doctor>[] = $state([]);
+    let doctors: Doctor[] = $state([]);
 
     onMount(async () => {
         // prefer server call for canonical list; if the user already has a doctors list, use it
@@ -58,16 +60,18 @@
                         <td class="actions">
                             {#if permissions.includes("edit_doctor")}
                                 <IconButton
-                                    href="/routes/dashboard/users/edit"
+                                    href="/dashboard/users/{doctor.id}/modify"
                                     label="Edit doctor account"
+                                    target="_blank"
                                     Icon={Pen}
                                 ></IconButton>
                             {/if}
+
                             {#if permissions.includes("set_admin_doctor")}
                                 <IconButton
                                     Icon={Crown}
                                     label="Set as Admin"
-                                    color="#AA6C39"
+                                    color="var(--gold-dark)"
                                 ></IconButton>
                             {/if}
                         </td>
@@ -75,10 +79,35 @@
                 {/each}
             </tbody>
         </table>
+
+        {#if permissions.includes("add_doctor")}
+            <div class="add-actions">
+                <Button
+                    label="Add a new Doctor"
+                    Icon={Plus}
+                    href="/dashboard/users/add"
+                    category="primary"
+                    style="margin-top: 1.5rem; width: 100%"
+                ></Button>
+
+                <Button
+                    label="Add an existing Doctor"
+                    Icon={Plus}
+                    href="#"
+                    category="secondary"
+                    style="margin-top: 1.5rem; width: 100%"
+                ></Button>
+            </div>
+        {/if}
     </Block>
 </main>
 
 <style>
+    .add-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
     .actions {
         display: flex;
         gap: 0.5rem;

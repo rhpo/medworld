@@ -79,6 +79,8 @@
             <p class="switch">
                 Already have an account?
                 <a href="/accounts/login">Log in</a>
+                <br />
+                <a href="/dashboard">Goto Dashboard</a>
             </p>
         </div>
     </section>

@@ -1,8 +1,9 @@
 <script lang="ts">
-    import { getPermissionsFromUserType } from "$lib/types/permission";
-    import type { Doctor } from "$lib/types/users/doctor";
-    import ManageAssistants from "./blocks/ManageAssistants.svelte";
     import ManagePatients from "./blocks/ManagePatients.svelte";
+    import ManageAssistants from "./blocks/ManageAssistants.svelte";
+    import { getPermissionsFromUserType } from "$lib/types/permission";
+
+    import type { Doctor } from "$lib/types/users/doctor";
 
     interface IProps {
         doctor: Doctor;

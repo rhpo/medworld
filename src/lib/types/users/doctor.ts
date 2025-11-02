@@ -6,7 +6,8 @@ import type { Message } from "../message";
 import type { Review } from "../reviews";
 import type { Speciality } from "../speciality";
 
-export interface Doctor extends User<Users.Doctor> {
+export interface Doctor extends User<any> {
+
     // Speciality
     speciality: Speciality;
 

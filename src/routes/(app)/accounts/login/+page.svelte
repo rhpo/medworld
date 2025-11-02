@@ -46,12 +46,15 @@
                 type="submit"
                 category="primary"
                 Icon={User}
+                href="/dashboard"
                 style="width: 100%">Log In</Button
             >
 
             <p class="switch">
                 Don't have an account?
                 <a href="/accounts/create">Create one</a>.
+                <br />
+                <a href="/dashboard">Goto Dashboard</a>
             </p>
         </div>
     </section>

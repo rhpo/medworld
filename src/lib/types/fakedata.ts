@@ -6,6 +6,8 @@ import type { Cabinet } from './cabinet';
 import type { Doctor } from './users/doctor';
 import type { Assistant } from './users/assistant';
 import { Speciality } from './speciality';
+import type { Admin } from './users/admin';
+import { PlanID, plans } from './plan';
 
 // Generate SuperAdmin users first (they oversee the entire platform)
 export const fakeSuperAdmin: User<Users.SuperAdmin> =
@@ -21,7 +23,7 @@ export const fakeSuperAdmin: User<Users.SuperAdmin> =
     }
 
 // Generate Admin users (they manage individual cabinets)
-export const fakeAdmins: Array<User<Users.Admin>> = [
+export const fakeAdmins: Array<Admin> = [
     {
         id: 3,
         firstName: 'Kamel',
@@ -30,8 +32,9 @@ export const fakeAdmins: Array<User<Users.Admin>> = [
         phoneNumber: '+213 555 123 456',
         type: Users.Admin,
         getFullName: () => 'Kamel Daoud',
-        createdAt: new Date('2023-02-01')
-    },
+        createdAt: new Date('2023-02-01'),
+        plan: plans[PlanID.basic]
+    } as any,
     {
         id: 4,
         firstName: 'Yasmina',
@@ -40,7 +43,9 @@ export const fakeAdmins: Array<User<Users.Admin>> = [
         phoneNumber: '+213 555 567 890',
         type: Users.Admin,
         getFullName: () => 'Yasmina Khadra',
-        createdAt: new Date('2023-02-01')
+        createdAt: new Date('2023-02-01'),
+        plan: plans[PlanID.standard]
+
     },
     {
         id: 5,
@@ -50,7 +55,9 @@ export const fakeAdmins: Array<User<Users.Admin>> = [
         phoneNumber: '+213 555 901 234',
         type: Users.Admin,
         getFullName: () => 'Mohammed Dib',
-        createdAt: new Date('2023-02-01')
+        createdAt: new Date('2023-02-01'),
+        plan: plans[PlanID.premium]
+
     },
     {
         id: 6,
@@ -60,7 +67,9 @@ export const fakeAdmins: Array<User<Users.Admin>> = [
         phoneNumber: '+213 555 345 678',
         type: Users.Admin,
         getFullName: () => 'Rachid Boudjedra',
-        createdAt: new Date('2023-02-01')
+        createdAt: new Date('2023-02-01'),
+        plan: plans[PlanID.basic]
+
     },
     {
         id: 7,
@@ -70,7 +79,9 @@ export const fakeAdmins: Array<User<Users.Admin>> = [
         phoneNumber: '+213 555 789 012',
         type: Users.Admin,
         getFullName: () => 'Kateb Yacine',
-        createdAt: new Date('2023-02-01')
+        createdAt: new Date('2023-02-01'),
+        plan: plans[PlanID.standard]
+
     }
 ];
 
@@ -114,14 +125,15 @@ const makeDoctor = (
     lastName: string,
     email: string,
     phoneNumber: string,
-    speciality: Speciality
+    speciality: Speciality,
+    avatarUrl?: string
 ): Doctor => ({
     id,
     firstName,
     lastName,
     email,
     phoneNumber,
-    avatarUrl: 'https://i.pravatar.cc/50',
+    avatarUrl: avatarUrl || 'https://i.pravatar.cc/50',
     type: Users.Doctor,
     speciality,
     dateOfBirth: new Date('1980-01-01'),
@@ -131,6 +143,8 @@ const makeDoctor = (
     calendars: [],
     consultations: [],
     cabinets: [],
+    consultationDuration: 20,
+    consultationPrice: 2000,
     assistants: [], // Will be populated after creating relationships
     getFullName: () => `${firstName} ${lastName}`,
     getYearsOfExperience: () => {
@@ -141,9 +155,9 @@ const makeDoctor = (
 
 // Generate doctors first so we can reference them in cabinets
 export const fakeDoctors: Doctor[] = [
-    makeDoctor(21, 'Mustapha', 'Benlamri', 'mustapha.benlamri@medworld.dz', '+213 555 123 456', Speciality.CARDIOLOGY),
-    makeDoctor(22, 'Nadjat', 'Belkacem', 'nadjat.belkacem@medworld.dz', '+213 555 234 567', Speciality.FAMILY_MEDICINE),
-    makeDoctor(23, 'Amine', 'Benchaabane', 'amine.benchaabane@medworld.dz', '+213 555 345 678', Speciality.PEDIATRICS),
+    makeDoctor(21, 'Rayan', 'El-miloudi', 'rayan.miloudi@medworld.dz', '+213 555 123 456', Speciality.CARDIOLOGY, 'https://cdn.discordapp.com/attachments/1269361766622564465/1434614521502372041/image.png?ex=6908f863&is=6907a6e3&hm=d3b284bec0be0c2eec0ce1811cba6a4861e854e4a26ee548b6530ee93f3c7f7a&'),
+    makeDoctor(22, 'Manel', 'Belaiouer', 'manel.manel@medworld.dz', '+213 555 234 567', Speciality.FAMILY_MEDICINE, 'https://i.ibb.co/MDfvPPPS/image.png'),
+    makeDoctor(23, 'Micipsa', 'Nekkmouche', 'micipsa.nekkmouche@medworld.dz', '+213 555 345 678', Speciality.PEDIATRICS, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1aqGoiYxd-zaVibJFGg9xTrZdMuknj4LuGmiQ5Xizhoq4Tj9OiQIzXss6D5b0YRtHmKE7ofSA8uF5IXjuYAqNqlvHV1VpWhRxJ8IikA&s=10'),
     makeDoctor(24, 'Sarah', 'Zerrouki', 'sarah.zerrouki@medworld.dz', '+213 555 456 789', Speciality.DERMATOLOGY)
 ];
 
@@ -176,15 +190,14 @@ export const fakeCabinets: Cabinet[] = [
         admin: fakeAdmins[0],
         doctors: [fakeDoctors[0], fakeDoctors[1]],
         assistants: [fakeAssistants[0]],
-        premiumPack: 'Premium',
         openingHours: {
             'monday': { open: '08:00', close: '17:00' },
             'tuesday': { open: '08:00', close: '17:00' },
             'wednesday': { open: '08:00', close: '17:00' },
             'thursday': { open: '08:00', close: '17:00' },
             'friday': { open: '08:00', close: '12:00' }
-        },
-        consultationDuration: 30,
+        },accessHandicap: true,
+        ratings: [],
         isClosed: false
     },
     {
@@ -196,7 +209,6 @@ export const fakeCabinets: Cabinet[] = [
         admin: fakeAdmins[1],
         doctors: [fakeDoctors[2]],
         assistants: [fakeAssistants[1]],
-        premiumPack: 'Standard',
         openingHours: {
             'monday': { open: '09:00', close: '18:00' },
             'tuesday': { open: '09:00', close: '18:00' },
@@ -204,7 +216,8 @@ export const fakeCabinets: Cabinet[] = [
             'thursday': { open: '09:00', close: '18:00' },
             'friday': { open: '09:00', close: '13:00' }
         },
-        consultationDuration: 45,
+        accessHandicap: true,
+        ratings: [],
         isClosed: false
     },
     {
@@ -216,15 +229,14 @@ export const fakeCabinets: Cabinet[] = [
         admin: fakeAdmins[2],
         doctors: [fakeDoctors[3]],
         assistants: [fakeAssistants[2]],
-        premiumPack: 'Premium',
         openingHours: {
             'monday': { open: '08:30', close: '17:30' },
             'tuesday': { open: '08:30', close: '17:30' },
             'wednesday': { open: '08:30', close: '17:30' },
             'thursday': { open: '08:30', close: '17:30' },
             'friday': { open: '08:30', close: '12:30' }
-        },
-        consultationDuration: 30,
+        },accessHandicap: true,
+        ratings: [],
         isClosed: false
     },
     {
@@ -236,7 +248,6 @@ export const fakeCabinets: Cabinet[] = [
         admin: fakeAdmins[3],
         doctors: [fakeDoctors[0]],
         assistants: [fakeAssistants[3]],
-        premiumPack: 'Standard',
         openingHours: {
             'monday': { open: '09:00', close: '18:00' },
             'tuesday': { open: '09:00', close: '18:00' },
@@ -244,7 +255,8 @@ export const fakeCabinets: Cabinet[] = [
             'thursday': { open: '09:00', close: '18:00' },
             'friday': { open: '09:00', close: '13:00' }
         },
-        consultationDuration: 40,
+        accessHandicap: true,
+        ratings: [],
         isClosed: false
     },
     {
@@ -256,7 +268,6 @@ export const fakeCabinets: Cabinet[] = [
         admin: fakeAdmins[4],
         doctors: [fakeDoctors[1]],
         assistants: [fakeAssistants[4]],
-        premiumPack: 'Premium',
         openingHours: {
             'monday': { open: '08:00', close: '17:00' },
             'tuesday': { open: '08:00', close: '17:00' },
@@ -264,7 +275,8 @@ export const fakeCabinets: Cabinet[] = [
             'thursday': { open: '08:00', close: '17:00' },
             'friday': { open: '08:00', close: '12:00' }
         },
-        consultationDuration: 35,
+        accessHandicap: true,
+        ratings: [],
         isClosed: false
     }
 ];

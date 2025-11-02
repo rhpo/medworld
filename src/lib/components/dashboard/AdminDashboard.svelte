@@ -4,7 +4,9 @@
     import ManageAssistants from "./blocks/ManageAssistants.svelte";
     import ManagePatients from "./blocks/ManagePatients.svelte";
     import ManageDoctors from "./blocks/ManageDoctors.svelte";
-    import Avatar from "../ui/Avatar.svelte";
+    import Plan from "./blocks/Plan.svelte";
+
+    import type { AnyUser } from "$lib/types/users";
 
     interface IProps {
         admin: Admin;
@@ -23,10 +25,11 @@
         <ManageAssistants user={admin} {permissions} />
     {/if}
 
-    <!-- Show Blocks based on the permissions that the admin has -->
     {#if permissions.find((e) => e.endsWith("_patient"))}
-        <ManagePatients user={admin} />
+        <ManagePatients user={admin as AnyUser} />
     {/if}
+
+    <Plan />
 </main>
 
 <style>
@@ -35,7 +38,6 @@
         display: flex;
         flex-direction: column;
         gap: 4rem;
-
         margin-bottom: 4rem;
     }
 </style>

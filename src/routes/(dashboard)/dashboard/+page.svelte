@@ -1,6 +1,8 @@
 <script lang="ts">
     import AdminDashboard from "$lib/components/dashboard/AdminDashboard.svelte";
+    import AssistantDashboard from "$lib/components/dashboard/AssistantDashboard.svelte";
     import DoctorDashboard from "$lib/components/dashboard/DoctorDashboard.svelte";
+    import SuperAdminDashboard from "$lib/components/dashboard/SuperAdminDashboard.svelte";
     import Avatar from "$lib/components/ui/Avatar.svelte";
     import View from "$lib/components/ui/View.svelte";
 
@@ -8,20 +10,20 @@
 
     import {
         fakeAdmins,
+        fakeAssistants,
         fakeDoctors,
+        fakePatients,
         fakeSuperAdmin,
     } from "$lib/types/fakedata";
 
-    import { Users, type UserType } from "$lib/types/users";
+    import { Users, UserTypeNames, type UserType } from "$lib/types/users";
+
     import type { Admin } from "$lib/types/users/admin";
+    import type { Assistant } from "$lib/types/users/assistant";
     import type { Doctor } from "$lib/types/users/doctor";
-    import { onMount } from "svelte";
+    import type { SuperAdmin } from "$lib/types/users/superadmin";
 
     let currentDemoAccountType: UserType = Users.Doctor;
-
-    onMount(() => {
-        user.set(fakeDoctors[0]);
-    });
 </script>
 
 {#if $user}
@@ -46,8 +48,12 @@
 
         {#if $user.type === Users.Doctor}
             <DoctorDashboard doctor={$user as Doctor} />
+        {:else if $user.type === Users.SuperAdmin}
+            <SuperAdminDashboard superadmin={$user as SuperAdmin} />
         {:else if $user.type === Users.Admin}
             <AdminDashboard admin={$user as Admin} />
+        {:else if $user.type === Users.Assistant}
+            <AssistantDashboard assistant={$user as Assistant} />
         {:else}
             <h2 style="color: var(--error)">
                 Unsupported Account type: {$user.type}
@@ -60,9 +66,11 @@
             Account Type:
             <!-- I'm here! -->
             <select bind:value={currentDemoAccountType}>
-                <option value={Users.Doctor}>Doctor</option>
-                <option value={Users.Admin}>Admin</option>
-                <option value={Users.SuperAdmin}>Super Admin</option>
+                {#each Object.keys(UserTypeNames) as userType}
+                    <option value={userType}
+                        >{UserTypeNames[userType as UserType]}</option
+                    >
+                {/each}
             </select>
 
             <br />
@@ -79,14 +87,17 @@
                     >
                 {:else if currentDemoAccountType === Users.Admin}
                     {#each fakeAdmins as user}
-                        <option value={user}>{user.getFullName()}</option>
+                        <option value={user}
+                            >{user.getFullName()} ({(user as Admin).plan
+                                .name})</option
+                        >
                     {/each}
                 {:else if currentDemoAccountType === Users.Assistant}
-                    {#each fakeDoctors as user}
+                    {#each fakeAssistants as user}
                         <option value={user}>{user.getFullName()}</option>
                     {/each}
                 {:else if currentDemoAccountType === Users.Patient}
-                    {#each fakeDoctors as user}
+                    {#each fakePatients as user}
                         <option value={user}>{user.getFullName()}</option>
                     {/each}
                 {/if}

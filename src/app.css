@@ -75,6 +75,9 @@ body {
   --error: #d73235;
   --error-dark: #c22729;
 
+  --gold: gold;
+  --gold-dark: #AA6C39;
+
   /* Typography */
   --font-brand: "Minigap", serif;
   --font-primary: var(--font-brand);

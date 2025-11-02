@@ -4,6 +4,8 @@ import type { Consultation } from "../consultation";
 import type { Review } from "../reviews";
 
 export interface Patient extends User<Users.Patient> {
+    emergencyContact: string;
+    bloodType: string;
     appointments: Appointment[];
     consultations: Consultation[];
     reviews: Review[];

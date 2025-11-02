@@ -17,6 +17,7 @@
   import { scale } from "svelte/transition";
   import { user } from "$lib/stores";
   import Avatar from "$lib/components/ui/Avatar.svelte";
+  import { fakeDoctors } from "$lib/types/fakedata";
 
   let { children } = $props();
 
@@ -54,14 +55,14 @@
         profileOpen = false;
       }
     });
-  });
 
-  onMount(() => {});
+    user.set(fakeDoctors[0]);
+  });
 </script>
 
 <svelte:head>
   <link rel="icon" href={logo} />
-  <title>{SITE_NAME}</title>
+  <title>{SITE_NAME} - {$user?.getFullName()}</title>
 </svelte:head>
 
 <main class:full={isMenuOpen}>
@@ -76,6 +77,7 @@
           <div class="icon">
             <Logo rotate />
           </div>
+
           <h1 class:invisible={!isFull} class:none={!isFull} class="title">
             {SITE_NAME}
           </h1>
@@ -431,6 +433,17 @@
     .footer-content {
       grid-template-columns: 1fr;
       gap: 2rem;
+    }
+
+    .title {
+      display: none;
+    }
+
+    .profile {
+      margin-left: 1rem;
+    }
+    .profile h3 {
+      font-size: 14px;
     }
   }
 </style>

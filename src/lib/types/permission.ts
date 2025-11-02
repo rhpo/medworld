@@ -27,6 +27,10 @@ export type Permission =
     'remove_assistant' |
     'assign_assistant' |
 
+    // Appointment
+    'cancel_appointment' |
+    'edit_appointment' |
+
     // Patient
     'view_patient' |
     'add_patient' |
@@ -51,7 +55,7 @@ export type Permission =
 
     // Patient-level permissions
     'rate_doctor' |
-    'cancel_appointment' |
+
 
     'all';
 
@@ -146,6 +150,8 @@ export const AssistantPermissions: Permission[] = [
     // Appointments
     'view_appointment',
     'cancel_appointment',
+    'edit_appointment',
+
 
     // Calendar
     'view_calendar',
