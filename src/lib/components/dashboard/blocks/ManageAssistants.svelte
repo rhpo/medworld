@@ -28,7 +28,7 @@
     });
 </script>
 
-<Block group="assistants" title="Manage Assistants" Icon={Users2}>
+<Block group="assistants" title="My Assistants" Icon={Users2}>
     <table>
         <thead>
             <tr>

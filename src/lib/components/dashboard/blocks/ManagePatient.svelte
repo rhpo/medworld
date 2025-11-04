@@ -59,7 +59,7 @@
 
 <Block
     group="patients"
-    title={cabinet !== undefined ? "Cabinet Patients" : "Manage Patients"}
+    title={cabinet !== undefined ? "Patients" : "Manage Patients"}
     Icon={UserSquare}
 >
     <div class="search-container">

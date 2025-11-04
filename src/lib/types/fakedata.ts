@@ -475,9 +475,9 @@ const makeDoctor = (
 
 
 export const fakeDoctors: Doctor[] = [
-    makeDoctor(21, 'Rayan', 'El-miloudi', 'rayan.miloudi@medworld.dz', '+213 555 123 456', Speciality.CARDIOLOGY, 'https://cdn.discordapp.com/attachments/1269361766622564465/1434614521502372041/image.png?ex=6908f863&is=6907a6e3&hm=d3b284bec0be0c2eec0ce1811cba6a4861e854e4a26ee548b6530ee93f3c7f7a&'),
-    makeDoctor(22, 'Manel', 'Belaiouer', 'manel.manel@medworld.dz', '+213 555 234 567', Speciality.FAMILY_MEDICINE, 'https://i.ibb.co/MDfvPPPS/image.png'),
-    makeDoctor(23, 'Micipsa', 'Nekkmouche', 'micipsa.nekkmouche@medworld.dz', '+213 555 345 678', Speciality.PEDIATRICS, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1aqGoiYxd-zaVibJFGg9xTrZdMuknj4LuGmiQ5Xizhoq4Tj9OiQIzXss6D5b0YRtHmKE7ofSA8uF5IXjuYAqNqlvHV1VpWhRxJ8IikA&s=10'),
+    makeDoctor(21, 'Rayan', 'El-miloudi', 'rayan.miloudi@medworld.dz', '+213 555 123 456', Speciality.CARDIOLOGY, 'https://i.pravatar.cc/500'),
+    makeDoctor(22, 'Manel', 'Manel', 'manel.manel@medworld.dz', '+213 555 234 567', Speciality.FAMILY_MEDICINE, 'https://i.pravatar.cc/500'),
+    makeDoctor(23, 'Micipsa', 'Nekkmouche', 'micipsa.nekkmouche@medworld.dz', '+213 555 345 678', Speciality.PEDIATRICS, 'https://i.pravatar.cc/500'),
     makeDoctor(24, 'Sarah', 'Zerrouki', 'sarah.zerrouki@medworld.dz', '+213 555 456 789', Speciality.DERMATOLOGY)
 ];
 
