@@ -55,7 +55,7 @@ export type Permission =
 
     // Patient-level permissions
     'rate_doctor' |
-
+    'view_messages'
 
     'all';
 
@@ -192,3 +192,25 @@ export function hasPermission(user: User<any>, permission: Permission): boolean 
     return getPermissionsFromUserType(user.type).includes(permission);
 }
 
+export type Group = 'patients' | 'assistants' | 'doctors' | 'appointments' | 'calendar' | 'messages';
+
+export function permissionGroupMap(permissions: Permission[]): Record<Group, boolean> {
+        return {
+            patients:
+                permissions.filter((e) => e.endsWith("_patient")).length > 0,
+            assistants:
+                permissions.filter((e) => e.endsWith("_assistant")).length > 0,
+            doctors:
+                permissions.filter((e) => e.endsWith("_doctor")).length > 0,
+            appointments:
+                permissions.filter((e) => e.endsWith("_appointment")).length >
+                0,
+            calendar: permissions.includes("view_calendar"),
+            messages: permissions.includes("view_messages"),
+        };
+    }
+
+export function groupPermissions(permissions: Permission[]): Group[] {
+    const map = permissionGroupMap(permissions);
+    return Object.keys(map).filter((key) => map[key as Group]) as Group[];
+}

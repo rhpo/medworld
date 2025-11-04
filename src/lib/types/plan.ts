@@ -1,13 +1,13 @@
 export const enum PlanID {
-    premium = 'premium',
-    standard = 'standard',
-    basic = 'basic'
+  premium = 'premium',
+  standard = 'standard',
+  basic = 'basic'
 }
 
 export type Plan = {
-    id: number;
-    planID: PlanID;
-    name: string;
+  id: number;
+  planID: PlanID;
+  name: string;
 }
 export const plans: Record<PlanID, Plan> = {
   [PlanID.basic]: {
@@ -25,6 +25,6 @@ export const plans: Record<PlanID, Plan> = {
   [PlanID.premium]: {
     planID: PlanID.premium,
     name: 'Premium Plan',
-    id: 2, // probably 2 instead of 0?
+    id: 2,
   },
 };

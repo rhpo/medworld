@@ -9,6 +9,7 @@ export interface Patient extends User<Users.Patient> {
     appointments: Appointment[];
     consultations: Consultation[];
     reviews: Review[];
+    weight: number;
 
     medicalHistory: string[];
     allergies?: string[];

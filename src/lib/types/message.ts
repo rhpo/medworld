@@ -1,6 +1,8 @@
 import type { Cabinet } from "./cabinet";
 import type { Consultation } from "./consultation";
 import type { User, Users } from "./users/";
+import type { Admin } from "./users/admin";
+import type { Doctor } from "./users/doctor";
 
 export type MessageContent = {
     message?: string;
@@ -8,11 +10,13 @@ export type MessageContent = {
 }
 
 export type Message = {
-    sender:             User<Users.Doctor>;
+    id:                 number;
+    sender:             Doctor | Admin;
     cabinet:            Cabinet;
-    receiver:           User<Users.Doctor> | User<Users.Admin>;
+    receiver:           Doctor | Admin;
     date:               Date;
     content:            MessageContent;
 
     status:             'seen' | 'unseen'
 }
+
