@@ -3,6 +3,9 @@ import type { Doctor } from './users/doctor';
 import type { Patient } from './users/patient';
 import type { Cabinet } from './cabinet';
 
+/**
+ * Creates a new appointment object.
+ */
 export const createAppointment = (
     id: number,
     doctorId: number,
@@ -22,6 +25,9 @@ export const createAppointment = (
     updatedAt: undefined
 });
 
+/**
+ * Creates an array of future appointments for a given doctor and patient.
+ */
 export const createFutureAppointments = (
     startId: number,
     doctor: Doctor,
