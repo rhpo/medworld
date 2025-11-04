@@ -1,5 +1,4 @@
 
-````markdown
 # Comment exécuter medowrld Svelte sur macOS
 
 Voici les étapes pour configurer et exécuter un projet **Svelte** sur macOS :
@@ -108,9 +107,9 @@ le projet svelte est maintenant pret et fonctionne localement sur le macos
 
 
 
-# MediTrack - your way to the ESST.
+# MedWorld - your way to the ESST.
 
-**MediTrack** est une application web qui permet la gestion de cabinets médicaux. Elle concerne cinq acteurs :
+**MedWorld** est une application web qui permet la gestion de cabinets médicaux. Elle concerne cinq acteurs :
 le SuperAdmin, l'Admin, les médecins, l'assistant ainsi que le patient. L'objectif est de permettre une bonne organisation des activités du cabinet, en définissant les fonctionnalités de chacun des acteurs, et ce en assurant la cohérence et la fiabilité des informations disponibles sur l'application. Chaque entité aura accès à un dashboard avec des options spécifiques aux tâches qui lui sont attribuées.
 
 # Rôles & Fonctionnalités :
