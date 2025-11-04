@@ -36,10 +36,11 @@ npm create svelte@latest mon-projet-svelte
 
 Suivez les instructions pour choisir votre configuration (Skeleton, SvelteKit, TypeScript, etc.).
 
-### Accédez au dossier du projet :
+### clonez la repoo :
 
 ```bash
-cd mon-projet-svelte
+git clone https://github.com/esstsup/team12
+cd team12
 ```
 
 ---
