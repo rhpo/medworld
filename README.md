@@ -24,7 +24,7 @@ Ou téléchargez-le directement depuis [nodejs.org](https://nodejs.org).
 
 ---
 
-## 2. clonez la repoo :
+## 2. Clonez la repo :
 
 ```bash
 git clone https://github.com/esstsup/team12
@@ -33,7 +33,7 @@ cd team12
 
 ---
 
-## 3. Installer les dépendances
+## 3. Installer les deependances
 
 Installez les paquets nécessaires :
 
