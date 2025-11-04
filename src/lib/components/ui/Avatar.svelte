@@ -20,8 +20,8 @@
         }
 
         const h = Math.abs(hash % 360);
-        const s = 70; // 70% saturation
-        const l = 60; // 60% lightness
+        const s = 70;
+        const l = 60;
 
         return `hsl(${h}, ${s}%, ${l}%)`;
     }

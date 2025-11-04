@@ -6,7 +6,7 @@
     import type { Permission } from "$lib/types/permission";
     import { Users, type User } from "$lib/types/users";
     import type { Doctor } from "$lib/types/users/doctor";
-    import { Unlink } from "@lucide/svelte";
+    import { Unlink, Users2 } from "@lucide/svelte";
     import { onMount } from "svelte";
 
     let {
@@ -28,50 +28,48 @@
     });
 </script>
 
-<main>
-    <Block title="Manage Assistants">
-        <table>
-            <thead>
+<Block group="assistants" title="Manage Assistants" Icon={Users2}>
+    <table>
+        <thead>
+            <tr>
+                <th>Avatar</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {#each assistants as assistant}
                 <tr>
-                    <th>Avatar</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {#each assistants as assistant}
-                    <tr>
-                        <td>
-                            <Avatar
-                                size="48px"
-                                avatarUrl={assistant.avatarUrl}
-                                alt={assistant.getFullName()}
-                            />
-                        </td>
-                        <td>{assistant.getFullName()}</td>
-                        <td>{assistant.email}</td>
-                        <td>{assistant.phoneNumber || "N/A"}</td>
-                        <td class="actions">
-                            {#if permissions.includes("edit_assistant")}
-                                <button>Edit</button>
-                            {/if}
+                    <td>
+                        <Avatar
+                            size="48px"
+                            avatarUrl={assistant.avatarUrl}
+                            alt={assistant.getFullName()}
+                        />
+                    </td>
+                    <td>{assistant.getFullName()}</td>
+                    <td>{assistant.email}</td>
+                    <td>{assistant.phoneNumber || "N/A"}</td>
+                    <td class="actions">
+                        {#if permissions.includes("edit_assistant")}
+                            <button>Edit</button>
+                        {/if}
 
-                            {#if permissions.includes("assign_assistant")}
-                                <IconButton
-                                    Icon={Unlink}
-                                    type="error"
-                                    label="Unlink Assistant"
-                                />
-                            {/if}
-                        </td>
-                    </tr>
-                {/each}
-            </tbody>
-        </table>
-    </Block>
-</main>
+                        {#if permissions.includes("assign_assistant")}
+                            <IconButton
+                                Icon={Unlink}
+                                type="error"
+                                label="Unlink Assistant"
+                            />
+                        {/if}
+                    </td>
+                </tr>
+            {/each}
+        </tbody>
+    </table>
+</Block>
 
 <style>
     .actions {

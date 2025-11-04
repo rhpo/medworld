@@ -7,6 +7,7 @@
     import Plan from "./blocks/Plan.svelte";
 
     import type { AnyUser } from "$lib/types/users";
+    import { currentBlock, currentCabinet } from "$lib/stores";
 
     interface IProps {
         admin: Admin;
@@ -16,7 +17,7 @@
     let permissions = getPermissionsFromUserType(admin.type);
 </script>
 
-<main>
+<main class:grid={$currentBlock === null}>
     {#if permissions.find((permission) => permission.endsWith("_doctor"))}
         <ManageDoctors user={admin} {permissions} />
     {/if}

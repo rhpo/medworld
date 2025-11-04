@@ -1,9 +1,16 @@
 <script lang="ts">
     import ManagePatients from "./blocks/ManagePatients.svelte";
     import ManageAssistants from "./blocks/ManageAssistants.svelte";
-    import { getPermissionsFromUserType } from "$lib/types/permission";
+    import {
+        getPermissionsFromUserType,
+        groupPermissions,
+    } from "$lib/types/permission";
 
     import type { Doctor } from "$lib/types/users/doctor";
+    import { currentBlock, currentCabinet } from "$lib/stores";
+    import ManageCalendar from "./blocks/calendar/ManageCalendar.svelte";
+    import type { Cabinet } from "$lib/types/cabinet";
+    import CabinetSelector from "./blocks/cabinets/CabinetSelector.svelte";
 
     interface IProps {
         doctor: Doctor;
@@ -11,16 +18,24 @@
 
     let { doctor }: IProps = $props();
     let permissions = getPermissionsFromUserType(doctor.type);
+    let permissionGroups = groupPermissions(permissions);
 </script>
 
-<main>
-    <!-- Show Blocks based on the permissions that the doctor has -->
-    {#if permissions.find((e) => e.endsWith("_patient"))}
-        <ManagePatients user={doctor} />
+<main class:grid={$currentBlock === null}>
+    {#if permissionGroups.includes("patients")}
+        <ManagePatients user={doctor} cabinet={$currentCabinet as Cabinet} />
     {/if}
 
-    {#if permissions.find((permission) => permission.endsWith("_assistant"))}
+    {#if permissionGroups.includes("assistants")}
         <ManageAssistants user={doctor} {permissions} />
+    {/if}
+
+    {#if permissionGroups.includes("calendar")}
+        <ManageCalendar
+            user={doctor}
+            {permissions}
+            cabinet={$currentCabinet as Cabinet}
+        />
     {/if}
 </main>
 

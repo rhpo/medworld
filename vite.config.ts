@@ -7,6 +7,6 @@ export default defineConfig({
     include: ["@lucide/svelte"],
   },
   server: {
-    allowedHosts: ["localhost", "7008bc265d5d.ngrok-free.app"]
+    allowedHosts: ["localhost", "184570eeef3b.ngrok-free.app"]
   }
 });

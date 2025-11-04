@@ -6,7 +6,14 @@
   import "aos/dist/aos.css";
 
   import { onMount } from "svelte";
-  import { ArrowRight, Hand, LogOut } from "@lucide/svelte";
+  import {
+    ArrowRight,
+    Crown,
+    Hand,
+    LogOut,
+    MinusIcon,
+    User,
+  } from "@lucide/svelte";
   import { links, SITE_DESCRIPTION, SITE_NAME } from "$lib";
 
   import Logo from "$lib/components/Logo.svelte";
@@ -110,9 +117,16 @@
 
           {#if profileOpen}
             <div class="dropdown" transition:scale bind:this={dropdown}>
-              <Button category="secondary" Icon={Hand} href="/admin/logout"
-                >Set Status</Button
+              <Button
+                category="secondary-gold"
+                Icon={Crown}
+                href="/dashboard/plans">Subscriptions</Button
               >
+
+              <Button category="secondary" Icon={User} href="/dashboard/profile"
+                >My Profile</Button
+              >
+
               <Button category="error" Icon={LogOut} href="/admin/logout"
                 >Logout</Button
               >

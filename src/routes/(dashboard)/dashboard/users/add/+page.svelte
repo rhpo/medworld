@@ -17,7 +17,6 @@
     let isLoading = true;
     let errorMessage = "";
 
-    // Form fields - generic for all users
     let formData = {
         firstName: "",
         lastName: "",
@@ -28,25 +27,21 @@
         gender: "",
         address: "",
 
-        // Doctor specific
         specialization: "",
         licenseNumber: "",
         yearsOfExperience: "",
 
-        // Patient specific
         bloodType: "",
         allergies: [] as string[],
         emergencyContact: "",
     };
 
-    // Available options
     const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
     onMount(async () => {
         try {
             if ($user === null) return;
 
-            // Set common fields
             formData.firstName = $user.firstName;
             formData.lastName = $user.lastName;
             formData.email = $user.email;
@@ -56,7 +51,6 @@
             formData.gender = $user.gender || "";
             formData.address = $user.address || "";
 
-            // Set role-specific fields
             if ($user.type === Users.Doctor) {
                 const doctor = $user as Doctor;
                 formData.specialization = doctor.speciality || "";
@@ -85,14 +79,13 @@
 
     function removeAllergy(index: number) {
         formData.allergies.splice(index, 1);
-        formData.allergies = formData.allergies; // trigger update
+        formData.allergies = formData.allergies;
     }
 
     async function handleSubmit() {
         try {
             isLoading = true;
 
-            // Prepare update data
             const updateData: any = {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
@@ -104,7 +97,6 @@
                 address: formData.address,
             };
 
-            // Add role-specific data
             if ($user?.type === Users.Doctor) {
                 updateData.speciality = formData.specialization;
                 updateData.yearsOfExperience =

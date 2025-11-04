@@ -31,7 +31,6 @@
 </div>
 
 <style>
-  /* Layout utilities */
   .view {
     width: 100%;
     max-width: var(--container-max);
@@ -50,7 +49,6 @@
 
   @media (max-width: 768px) {
     .view {
-      /* padding: 0 20px; */
       padding: 0 20px;
     }
   }

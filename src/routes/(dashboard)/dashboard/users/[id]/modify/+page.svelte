@@ -18,52 +18,48 @@
     let isLoading = true;
     let errorMessage = "";
 
-    // Form fields - generic for all users
     let formData = {
         firstName: "",
         lastName: "",
         email: "",
         phoneNumber: "",
         avatarUrl: "",
-        dateOfBirth: "",
+        dateOfBirth: new Date(),
         gender: "",
+
+        medicalHistory: [],
         address: "",
 
-        // Doctor specific
         specialization: "",
         licenseNumber: "",
         yearsOfExperience: "",
 
-        // Patient specific
         bloodType: "",
         allergies: [] as string[],
         emergencyContact: "",
     };
 
-    // Available options
     const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
     onMount(async () => {
         try {
             if (!userId) throw new Error("User ID is required");
 
-            // Fetch user data based on ID
-            // You'll need to implement getUserById in your API that can handle all user types
             user = await UserAPI.getById(userId);
 
             if (user === null) return;
 
-            // Set common fields
             formData.firstName = user.firstName;
             formData.lastName = user.lastName;
             formData.email = user.email;
             formData.phoneNumber = user.phoneNumber || "";
             formData.avatarUrl = user.avatarUrl || "";
-            formData.dateOfBirth = user.dateOfBirth || "";
+            formData.dateOfBirth = user.dateOfBirth || new Date();
             formData.gender = user.gender || "";
             formData.address = user.address || "";
+            (formData.medicalHistory as string[]) =
+                (user as Patient).medicalHistory || [];
 
-            // Set role-specific fields
             if (user.type === Users.Doctor) {
                 const doctor = user as Doctor;
                 formData.specialization = doctor.speciality || "";
@@ -92,7 +88,7 @@
 
     function removeAllergy(index: number) {
         formData.allergies.splice(index, 1);
-        formData.allergies = formData.allergies; // trigger update
+        formData.allergies = formData.allergies;
     }
 
     function handleFileChange(e: Event) {
@@ -111,7 +107,6 @@
         try {
             isLoading = true;
 
-            // Prepare update data
             const updateData: any = {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
@@ -123,7 +118,6 @@
                 address: formData.address,
             };
 
-            // Add role-specific data
             if (user?.type === Users.Doctor) {
                 updateData.speciality = formData.specialization;
                 updateData.yearsOfExperience =
@@ -232,7 +226,7 @@
                                 <label for="dateOfBirth">Date of Birth</label>
                                 <Input
                                     type="date"
-                                    bind:value={formData.dateOfBirth}
+                                    bind:value={formData.dateOfBirth as any}
                                 />
                             </div>
 
@@ -252,11 +246,6 @@
                         <div class="form-group">
                             <label for="address">Address</label>
                             <Input type="text" bind:value={formData.address} />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="avatarUrl">Avatar URL</label>
-                            <Input type="url" bind:value={formData.avatarUrl} />
                         </div>
                     </div>
 
@@ -328,6 +317,23 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="bloodType">Blood Type</label>
+                                    <select
+                                        class="form-select"
+                                        bind:value={formData.bloodType}
+                                    >
+                                        <option value=""
+                                            >Select Blood Type</option
+                                        >
+                                        {#each bloodTypes as bloodType}
+                                            <option value={bloodType}
+                                                >{bloodType}</option
+                                            >
+                                        {/each}
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
                                     <label for="emergencyContact"
                                         >Emergency Contact</label
                                     >
@@ -339,7 +345,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Allergies</label>
+                                <label for="chip-list">Allergies</label>
                                 <div class="chip-list">
                                     {#each formData.allergies as allergy, index}
                                         <div class="chip">
@@ -448,7 +454,6 @@
         color: #fff;
     }
 
-    /* Black overlay with icon */
     .avatar-overlay {
         position: absolute;
         inset: 0;

@@ -20,7 +20,14 @@
     ...rest
   }: {
     href?: string;
-    category?: "primary" | "secondary" | "third" | "cta" | "error";
+    category?:
+      | "primary"
+      | "secondary"
+      | "third"
+      | "gold"
+      | "secondary-gold"
+      | "cta"
+      | "error";
     label?: string;
     Icon?: any;
     iconPosition?: "left" | "right";
@@ -92,9 +99,8 @@
 {/if}
 
 <style>
-  /* Button System */
   .button {
-    display: inline-flex;
+    display: inline-flex !important;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
@@ -198,6 +204,29 @@
 
   .button.third:hover {
     background: var(--color-primary-light);
+  }
+
+  .gold {
+    background: var(--gold);
+    color: var(--white);
+    box-shadow: 0 4px 12px rgba(var(--shadow-color-rgb), 0.3);
+  }
+
+  .gold:hover {
+    background: var(--gold-dark);
+    box-shadow: 0 6px 16px rgba(var(--shadow-color-rgb), 0.2);
+  }
+
+  .secondary-gold {
+    background: transparent;
+    color: var(--gold);
+    border: 2px solid var(--gold);
+  }
+
+  .secondary-gold:hover {
+    color: var(--gold-dark);
+    border-color: var(--white);
+    background: var(--white);
   }
 
   .cta {

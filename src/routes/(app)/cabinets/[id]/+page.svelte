@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Block from "$lib/components/ui/Block.svelte";
+    import Section from "$lib/components/ui/Section.svelte";
     import Button from "$lib/components/ui/Button.svelte";
     import View from "$lib/components/ui/View.svelte";
     import Face from "$lib/components/ui/Face.svelte";
@@ -11,11 +11,12 @@
         Phone,
         Shield,
         Settings,
+        Star,
     } from "@lucide/svelte";
 
     import { fakeCabinets } from "$lib/types/fakedata";
     import { page } from "$app/state";
-    import type { Cabinet } from "$lib/types/cabinet";
+    import { isCabinetOpen, type Cabinet } from "$lib/types/cabinet";
     import type { Doctor } from "$lib/types/users/doctor";
 
     // get id from route params and load the matching cabinet
@@ -50,22 +51,28 @@
             </div>
 
             <div class="cabinet-grid">
+                <img
+                    src={cabinet.image}
+                    alt=""
+                    style="width: 50%; border-radius: 2rem;"
+                />
+
                 <!-- Basic Information -->
-                <Block title="Basic Information">
+                <Section title="Basic Information">
                     <div class="info-list">
                         <div class="info-item">
                             <MapPin size={20} />
-                            <span>{cabinet.address}</span>
+                            <span>{cabinet.location.address}</span>
                         </div>
                         <div class="info-item">
                             <Phone size={20} />
                             <span>{cabinet.phone}</span>
                         </div>
                     </div>
-                </Block>
+                </Section>
 
                 <!-- Staff -->
-                <Block title="Staff Members">
+                <Section title="Staff Members">
                     <div class="staff-list">
                         <div class="staff-section">
                             <h3>Admin</h3>
@@ -95,10 +102,10 @@
                             {/each}
                         </div>
                     </div>
-                </Block>
+                </Section>
 
                 <!-- Opening Hours -->
-                <Block title="Opening Hours">
+                <Section title="Opening Hours">
                     <div class="hours-list">
                         {#each weekDays as day}
                             <div
@@ -126,10 +133,10 @@
                             </div>
                         {/each}
                     </div>
-                </Block>
+                </Section>
 
                 <!-- Consultation Settings -->
-                <Block title="Consultation Settings">
+                <Section title="Consultation Settings">
                     <div class="settings-list">
                         <div class="settings-item">
                             <div class="settings-icon">
@@ -157,12 +164,16 @@
                             <div class="settings-info">
                                 <div class="settings-label">Status</div>
                                 <div class="settings-value">
-                                    {cabinet.isClosed ? "Closed" : "Open"}
+                                    {isCabinetOpen(cabinet) ? "Closed" : "Open"}
                                 </div>
                             </div>
                         </div>
                     </div>
-                </Block>
+                </Section>
+
+                <Button Icon={Star} href="/cabinets/{cabinet.id}/rate"
+                    >Rate Cabinet</Button
+                >
             </div>
         </div>
     </View>
@@ -172,6 +183,7 @@
     .page-content {
         flex: 1;
         width: 100%;
+        padding-bottom: 2rem;
     }
 
     .cabinet-header {
@@ -189,9 +201,9 @@
     }
 
     .cabinet-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
         padding: 0 0.5rem;
     }
 

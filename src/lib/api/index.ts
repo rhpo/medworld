@@ -16,10 +16,10 @@ import {
 import type { Patient } from '$lib/types/users/patient';
 import type { Assistant } from '$lib/types/users/assistant';
 
-// Simulate network delay for realistic API behavior
+
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Random delay between 200ms and 800ms
+
 const randomDelay = () => delay(Math.random() * 600 + 200);
 
 export const AllAPI = {
@@ -60,7 +60,7 @@ export const AllAPI = {
     },
 };
 
-// Cabinet API
+
 export const CabinetAPI = {
     async list(): Promise<Cabinet[]> {
         await randomDelay();
@@ -73,7 +73,7 @@ export const CabinetAPI = {
         return cabinet || null;
     },
 
-    async getDoctors(cabinetId: number): Promise<Array<User<Users.Doctor>>> {
+    async getDoctors(cabinetId: number): Promise<Array<Doctor>> {
         await randomDelay();
         const cabinet = fakeCabinets.find(c => c.id === cabinetId);
         return cabinet?.doctors || [];
@@ -91,15 +91,15 @@ export const CabinetAPI = {
     },
 };
 
-// Doctor API
+
 export const UserAPI = {
     async UpdateProfile(user: User<any>, newUser: User<any>) {
         if (user.type === Users.Doctor) {
-            // fakeDoctors = fakeDoctors.map((doctor: Doctor) => {
-            //     if (doctor.id === user.id) {
-            //         return user as Doctor;
-            //     }
-            // })
+
+
+
+
+
         }
     },
 
@@ -108,7 +108,7 @@ export const UserAPI = {
     }
 }
 
-// Doctor API
+
 export const DoctorAPI = {
     async list(): Promise<Doctor[]> {
         await randomDelay();
@@ -151,7 +151,7 @@ export const DoctorAPI = {
     },
 };
 
-// Patient API
+
 export const PatientAPI = {
     async list(): Promise<Array<User<Users.Patient>>> {
         await randomDelay();
@@ -175,7 +175,7 @@ export const PatientAPI = {
     }
 };
 
-// Appointment API
+
 export const AppointmentAPI = {
     async list(): Promise<Appointment[]> {
         await randomDelay();
@@ -221,7 +221,7 @@ export const AppointmentAPI = {
     }
 };
 
-// Consultation API
+
 export const ConsultationAPI = {
     async list(): Promise<Consultation[]> {
         await randomDelay();
@@ -259,7 +259,7 @@ export const ConsultationAPI = {
     }
 };
 
-// Global search functionality
+
 export const SearchAPI = {
     async searchDoctors(query: string): Promise<Doctor[]> {
         await randomDelay();

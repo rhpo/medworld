@@ -78,7 +78,7 @@
     );
 </script>
 
-<Block title="Plans">
+<Block group={"plan" as any} title="My Subscriptions" Icon={Crown}>
     {#if current}
         <div class="current-container">
             <article class="plan current" aria-live="polite">

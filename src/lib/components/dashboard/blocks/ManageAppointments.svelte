@@ -2,10 +2,12 @@
     import { AllAPI } from "$lib/api";
     import Block from "$lib/components/ui/Block.svelte";
     import Button from "$lib/components/ui/Button.svelte";
+    import IconButton from "$lib/components/ui/IconButton.svelte";
     import type { Appointment } from "$lib/types/appointment";
     import type { Permission } from "$lib/types/permission";
     import { Users } from "$lib/types/users";
     import type { Assistant } from "$lib/types/users/assistant";
+    import { Pen, Timer, Trash } from "@lucide/svelte";
     import { onMount } from "svelte";
 
     let {
@@ -27,47 +29,54 @@
     });
 </script>
 
-<main>
-    <Block title="Manage Appointments">
-        <table>
-            <thead>
+<Block group="appointments" title="Manage Appointments" Icon={Timer}>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Doctor</th>
+                <th>Cabinet</th>
+                <th>Created at</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {#each appointment as appointment}
                 <tr>
-                    <th>Id</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Doctor</th>
-                    <th>Cabinet</th>
-                    <th>Created at</th>
-                    <th>Updated at</th>
+                    <td>{appointment.patient.getFullName()}</td>
+                    <td>{appointment.date}</td>
+                    <td>{appointment.status}</td>
+                    <td>{appointment.doctor.getFullName()}</td>
+                    <td>{appointment.cabinet.name}</td>
+                    <td>{new Date(appointment.createdAt).toDateString()}</td>
+                    <td class="actions">
+                        {#if permissions.includes("edit_appointment")}
+                            <IconButton
+                                Icon={Pen}
+                                title="Edit Appointment"
+                            ></IconButton>
+                        {/if}
+                        {#if permissions.includes("cancel_appointment")}
+                            <IconButton
+                                type="error"
+                                Icon={Trash}
+                                label="Cancel Appointment"
+                            ></IconButton>
+                        {/if}
+                        {#if permissions.includes("view_appointment")}
+                            <IconButton
+                                Icon={Timer}
+                                label="View Appointment Details"
+                            ></IconButton>
+                        {/if}
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                {#each appointment as appointment}
-                    <tr>
-                        <td>{appointment.patient}</td>
-                        <td>{appointment.date}</td>
-                        <td>{appointment.status}</td>
-                        <td>{appointment.doctor}</td>
-                        <td>{appointment.cabinet}</td>
-                        <td>{appointment.createdAt}</td>
-                        <td>{appointment.updatedAt}</td>
-                        <td class="actions">
-                            {#if permissions.includes("edit_appointment")}
-                                <Button>Edit</Button>
-                            {/if}
-                            {#if permissions.includes("cancel_appointment")}
-                                <Button>Delete</Button>
-                            {/if}
-                            {#if permissions.includes("view_appointment")}
-                                <Button>View</Button>
-                            {/if}
-                        </td>
-                    </tr>
-                {/each}
-            </tbody>
-        </table>
-    </Block>
-</main>
+            {/each}
+        </tbody>
+    </table>
+</Block>
 
 <style>
     .actions {

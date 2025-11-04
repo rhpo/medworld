@@ -21,7 +21,7 @@
 
     <!-- Show Blocks based on the permissions that the patient has -->
     {#if permissions.find((e) => e.endsWith("_appointment"))}
-        <ManageAppointments user={patient} {permissions} />
+        <ManageAppointments user={patient as any} {permissions} />
     {/if}
 </main>
 

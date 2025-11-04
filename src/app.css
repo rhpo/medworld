@@ -50,7 +50,7 @@ body {
   /* view */
   --view-max: 1600px;
 
-  /* Light Theme */
+
 
   --color-primary: rgb(44, 139, 234);
   --color-primary-light: rgb(109, 177, 244);
@@ -75,24 +75,24 @@ body {
   --error: #d73235;
   --error-dark: #c22729;
 
-  --gold: gold;
+  --gold: #c99314;
   --gold-dark: #AA6C39;
 
-  /* Typography */
+
   --font-brand: "Minigap", serif;
   --font-primary: var(--font-brand);
-  /* --font-primary: "Momo Signature", serif; */
+
   --font-secondary: "Inter", "Amiri", "Noto Sans Tifinagh", sans-serif;
   --font-third: "JetBrains Mono", monospace;
 
-  /* Spacing & Layout */
+
   --container-max: 1400px;
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
   --border-radius-lg: 12px;
   --border-radius-xl: 16px;
 
-  /* Transitions */
+
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 0.3s ease-out;
   --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -100,7 +100,7 @@ body {
   --transition-duration: 0.3s;
   --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* for hamburger */
+
   --padding: 0;
   --color: var(--color-primary-darker);
 
@@ -122,7 +122,7 @@ body {
   box-sizing: border-box;
 }
 
-/* ISSUE: overflow-x: hidden; causes the navigation bar to not be sticky */
+
 /*
 html,
 body {
@@ -183,7 +183,7 @@ body {
   padding: 0 2rem;
 }
 
-/* Animation Classes */
+
 .fade-in {
   animation: fadeIn 0.8s ease-out;
 }
@@ -212,7 +212,7 @@ body {
   }
 }
 
-/* Typography */
+
 h1 {
   font-family: var(--font-primary);
   font-size: clamp(2.5rem, 5vw, 4rem);
@@ -247,7 +247,7 @@ h3 {
   color: var(--text-light);
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
   .view {
     padding: 0 1rem;
@@ -270,7 +270,7 @@ h3 {
   }
 }
 
-/* Loading States */
+
 .spinner {
   width: 40px;
   height: 40px;
@@ -300,7 +300,7 @@ a:hover {
   color: var(--primary-light);
 }
 
-/* Some additional classes */
+
 .invisible {
   opacity: 0;
   pointer-events: none;
@@ -312,7 +312,7 @@ a:hover {
 }
 
 
-/* Table styles */
+
  table {
         border-collapse: collapse;
         width: 100%;
@@ -332,14 +332,14 @@ a:hover {
         font-weight: 600;
     }
 
-    img {
+    table img {
         width: 2rem;
         height: 2rem;
         border-radius: 9999px;
         object-fit: cover;
     }
 
-    img {
+    table img {
         width: 2rem;
         height: 2rem;
         border-radius: 9999px;
@@ -350,8 +350,14 @@ a:hover {
         margin-bottom: 1rem;
     }
 
-    /* tippy */
+
     :global(.tooltip) {
     font-size: 1.2rem;
     text-transform: uppercase;
   }
+
+    main.grid {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+        gap: 1rem !important;
+    }
