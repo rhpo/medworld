@@ -477,7 +477,7 @@ const makeDoctor = (
 export const fakeDoctors: Doctor[] = [
     makeDoctor(21, 'Rayan', 'El-miloudi', 'rayan.miloudi@medworld.dz', '+213 555 123 456', Speciality.CARDIOLOGY, 'https://i.pravatar.cc/500'),
     makeDoctor(22, 'Manel', 'Manel', 'manel.manel@medworld.dz', '+213 555 234 567', Speciality.FAMILY_MEDICINE, 'https://i.pravatar.cc/500'),
-    makeDoctor(23, 'Micipsa', 'Nekkmouche', 'micipsa.nekkmouche@medworld.dz', '+213 555 345 678', Speciality.PEDIATRICS, 'https://i.pravatar.cc/500'),
+    makeDoctor(23, 'Ramy', 'Hadid', 'ramy.ramyyy@medworld.dz', '+213 555 345 678', Speciality.PEDIATRICS, 'https://i.pravatar.cc/500'),
     makeDoctor(24, 'Sarah', 'Zerrouki', 'sarah.zerrouki@medworld.dz', '+213 555 456 789', Speciality.DERMATOLOGY)
 ];
 
