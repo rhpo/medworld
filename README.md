@@ -24,19 +24,7 @@ Ou téléchargez-le directement depuis [nodejs.org](https://nodejs.org).
 
 ---
 
-## 2. Créer un nouveau projet Svelte
-
-Utilisez **npm** ou **pnpm** pour créer votre projet.
-
-### Avec npm :
-
-```bash
-npm create svelte@latest mon-projet-svelte
-```
-
-Suivez les instructions pour choisir votre configuration (Skeleton, SvelteKit, TypeScript, etc.).
-
-### clonez la repoo :
+## 2. clonez la repoo :
 
 ```bash
 git clone https://github.com/esstsup/team12
