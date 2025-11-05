@@ -55,7 +55,8 @@ export type Permission =
 
     // Patient-level permissions
     'rate_doctor' |
-    'view_messages'
+    'view_message' |
+    'send_message' |
 
     'all';
 
@@ -105,6 +106,17 @@ export const MedicalFolderManagement: Permission[] = [
     'remove_medical_folder',
 ]
 
+export const AppointmentManagement: Permission[] = [
+    'view_appointment',
+    'edit_appointment',
+    'cancel_appointment',
+]
+
+export const MessageManagement: Permission[] = [
+    'send_message',
+    'view_message',
+]
+
 export const DoctorPermissions: Permission[] = [
     // Gestion Dossier Medical
     ...MedicalFolderManagement,
@@ -118,6 +130,11 @@ export const DoctorPermissions: Permission[] = [
     // Gestion de consultations
     ...ConsultationManagement,
 
+    ...AppointmentManagement,
+
+    ...MessageManagement,
+
+
     'assign_assistant'
 
 ];
@@ -130,6 +147,8 @@ export const SuperAdminPermissions: Permission[] = [
 
     // Gestion d'assistants
     ...AssistantManagement,
+
+    ...MessageManagement,
 
 ];
 
@@ -167,7 +186,8 @@ export const PatientPermissions: Permission[] = [
     // View/Book/cancel Appointments
     'book_appointment',
     'view_appointment',
-    'cancel_appointment'
+
+    ...AppointmentManagement
 ];
 
 // Usqble Functions
@@ -192,23 +212,26 @@ export function hasPermission(user: User<any>, permission: Permission): boolean 
     return getPermissionsFromUserType(user.type).includes(permission);
 }
 
-export type Group = 'patients' | 'assistants' | 'doctors' | 'appointments' | 'calendar' | 'messages';
+export type Group = 'patients' | 'assistants' | 'doctors' | 'appointments' | 'book_appointment' | 'calendar' | 'messages' | 'cabinets';
 
 export function permissionGroupMap(permissions: Permission[]): Record<Group, boolean> {
-        return {
-            patients:
-                permissions.filter((e) => e.endsWith("_patient")).length > 0,
-            assistants:
-                permissions.filter((e) => e.endsWith("_assistant")).length > 0,
-            doctors:
-                permissions.filter((e) => e.endsWith("_doctor")).length > 0,
-            appointments:
-                permissions.filter((e) => e.endsWith("_appointment")).length >
-                0,
-            calendar: permissions.includes("view_calendar"),
-            messages: permissions.includes("view_messages"),
-        };
-    }
+    return {
+        cabinets:
+            permissions.filter(e => e.endsWith('_cabinet')).length > 0,
+        patients:
+            permissions.filter((e) => e.endsWith("_patient")).length > 0,
+        assistants:
+            permissions.filter((e) => e.endsWith("_assistant")).length > 0,
+        doctors:
+            permissions.filter((e) => e.endsWith("_doctor")).length > 0,
+        appointments:
+            permissions.filter((e) => (["view_appointment", "edit_appointment", "cancel_appointment"] as Permission[]).includes(e)).length >
+            0,
+        book_appointment: permissions.includes('book_appointment'),
+        calendar: permissions.includes("view_calendar"),
+        messages: permissions.includes("view_message"),
+    };
+}
 
 export function groupPermissions(permissions: Permission[]): Group[] {
     const map = permissionGroupMap(permissions);

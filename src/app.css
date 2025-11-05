@@ -318,13 +318,18 @@ a:hover {
         width: 100%;
         border-radius: 1rem;
         overflow: hidden;
+        background-color: var(--background-primary);
+    }
+
+    tr {
+        border-bottom: 1px solid #e5e7eb;
+
     }
 
     th,
     td {
         padding: 1rem;
         text-align: left;
-        border-bottom: 1px solid #e5e7eb;
     }
 
     th {
@@ -332,6 +337,8 @@ a:hover {
         font-weight: 600;
     }
 
+
+
     table img {
         width: 2rem;
         height: 2rem;
@@ -339,11 +346,29 @@ a:hover {
         object-fit: cover;
     }
 
-    table img {
-        width: 2rem;
-        height: 2rem;
-        border-radius: 9999px;
-        object-fit: cover;
+
+
+    @media (max-width: 768px) {
+
+      .desktop {
+        display: none;
+      }
+
+      table {
+        overflow-x: scroll;
+      }
+
+      table th, table td {
+        font-size: 0.8rem;
+      }
+
+      table td {
+        padding: 0.5rem;
+      }
+
+      table .actions {
+        flex-direction: column;
+      }
     }
 
     .search-container {

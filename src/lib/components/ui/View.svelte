@@ -6,7 +6,7 @@
     align?: "row" | "column" | "default";
     center?: boolean;
     screen?: boolean;
-    main?: boolean; // For main layout
+    main?: boolean;
   }
 
   let {

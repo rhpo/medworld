@@ -57,7 +57,6 @@
                     style="width: 50%; border-radius: 2rem;"
                 />
 
-                <!-- Basic Information -->
                 <Section title="Basic Information">
                     <div class="info-list">
                         <div class="info-item">
@@ -71,7 +70,6 @@
                     </div>
                 </Section>
 
-                <!-- Staff -->
                 <Section title="Staff Members">
                     <div class="staff-list">
                         <div class="staff-section">
@@ -104,7 +102,6 @@
                     </div>
                 </Section>
 
-                <!-- Opening Hours -->
                 <Section title="Opening Hours">
                     <div class="hours-list">
                         {#each weekDays as day}
@@ -135,7 +132,6 @@
                     </div>
                 </Section>
 
-                <!-- Consultation Settings -->
                 <Section title="Consultation Settings">
                     <div class="settings-list">
                         <div class="settings-item">

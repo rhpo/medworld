@@ -118,7 +118,7 @@
                                 category="primary"
                                 Icon={Crown}
                                 style="width:100%"
-                                on:click={() => selectPlan(plan.id)}
+                                onclick={() => selectPlan(plan.id)}
                             >
                                 Choose Plan
                             </Button>

@@ -7,6 +7,7 @@
     import type { Doctor } from "$lib/types/users/doctor";
     import { onMount } from "svelte";
     import CabinetCard from "./CabinetCard.svelte";
+    import { scale } from "svelte/transition";
 
     let {
         selectedCabinet = $bindable(null),
@@ -44,6 +45,28 @@
                 cabinets = [];
         }
     });
+
+    function searchCabinet(cabinets: Cabinet[], query: string): Cabinet[] {
+        let result = cabinets;
+        query = query.toLowerCase().trim();
+
+        result = result.filter((cabinet) => {
+            if (
+                cabinet.name.toLowerCase().includes(query) ||
+                cabinet.doctors
+                    .map((d) => d.getFullName().toLowerCase())
+                    .includes(query) ||
+                cabinet.doctors.some((d) =>
+                    query.includes(d.speciality.toLowerCase()),
+                ) ||
+                cabinet.location.address.toLowerCase().includes(query)
+            ) {
+                return true;
+            } else return false;
+        });
+
+        return result;
+    }
 </script>
 
 <div class="cabinet-selector">
@@ -56,10 +79,11 @@
     </div>
 
     <div class="cabinets-grid">
-        {#each cabinets.filter((c) => c.name
-                .toLowerCase()
-                .includes(search.toLowerCase())) as cabinet}
-            <button onclick={() => (selectedCabinet = cabinet)}>
+        {#each searchCabinet(cabinets, search) as cabinet}
+            <button
+                onclick={() => (selectedCabinet = cabinet)}
+                transition:scale
+            >
                 <CabinetCard {cabinet} />
             </button>
         {/each}

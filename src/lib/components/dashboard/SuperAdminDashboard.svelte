@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { currentBlock, currentCabinet, user } from "$lib/stores";
+    import type { Cabinet } from "$lib/types/cabinet";
     import { getPermissionsFromUserType } from "$lib/types/permission";
 
     import type { SuperAdmin } from "$lib/types/users/superadmin";
@@ -15,19 +17,20 @@
     let permissions = getPermissionsFromUserType(superadmin.type);
 </script>
 
-<main>
-    <!-- Show Blocks based on the permissions that the superadmin has -->
+<main class:grid={$currentBlock === null}>
     {#if permissions.find((e) => e.endsWith("_doctor"))}
         <ManageDoctors user={superadmin} {permissions} />
     {/if}
 
-    <!-- Show Blocks based on the permissions that the superadmin has -->
     {#if permissions.find((e) => e.endsWith("_patient"))}
         <ManagePatients user={superadmin} />
     {/if}
 
     {#if permissions.find((p) => p.endsWith("cabinet"))}
-        <ManageCabinet />
+        <ManageCabinet
+            user={$user as SuperAdmin}
+            cabinet={$currentCabinet as Cabinet}
+        />
     {/if}
 </main>
 

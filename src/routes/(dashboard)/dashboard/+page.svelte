@@ -60,6 +60,7 @@
                             : ""}
                         {$user.firstName}
                         {$user.type === Users.Admin ? " (Admin)" : ""}
+                        {$user.type === Users.SuperAdmin ? " (SuperAdmin)" : ""}
                     </h1>
 
                     {#if $currentCabinet}
@@ -192,5 +193,19 @@
     }
     .action:hover .icon {
         transform: translateX(-5px);
+    }
+
+    @media screen and (max-width: 1000px) {
+        .info h1 {
+            font-size: 1rem;
+        }
+
+        .info .cabinet {
+            font-size: 1rem;
+        }
+
+        .welcome {
+            margin-bottom: 0;
+        }
     }
 </style>

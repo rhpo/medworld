@@ -45,3 +45,5 @@ export type AnyUser = User<any>;
 
 export type IUser = AnyUser & (SuperAdmin | Admin | Doctor | Assistant | Patient);
 export type IDoctor = AnyUser & (Admin | Doctor);
+
+export type MixedUser = AnyUser & SuperAdmin & Admin & Doctor & Assistant & Patient;

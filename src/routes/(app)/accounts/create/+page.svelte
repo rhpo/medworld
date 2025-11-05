@@ -23,12 +23,10 @@
 </script>
 
 <main class="auth-container" data-aos="fade-up" data-aos-duration="1200">
-    <!-- Left Side -->
     <section class="left">
         <div class="overlay"></div>
     </section>
 
-    <!-- Right Side -->
     <section class="right" data-aos="flip-right" data-aos-duration="1200">
         <div class="form-container">
             <UserPlus size="72" style="margin-bottom: 1rem;" />

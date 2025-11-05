@@ -32,7 +32,7 @@
     <table>
         <thead>
             <tr>
-                <th>Avatar</th>
+                <th class="desktop">Avatar</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
@@ -42,7 +42,7 @@
         <tbody>
             {#each assistants as assistant}
                 <tr>
-                    <td>
+                    <td class="desktop">
                         <Avatar
                             size="48px"
                             avatarUrl={assistant.avatarUrl}

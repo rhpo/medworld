@@ -11,6 +11,8 @@
     import ManageCalendar from "./blocks/calendar/ManageCalendar.svelte";
     import type { Cabinet } from "$lib/types/cabinet";
     import CabinetSelector from "./blocks/cabinets/CabinetSelector.svelte";
+    import ManageAppointments from "./blocks/ManageAppointments.svelte";
+    import Messages from "./blocks/Messages.svelte";
 
     interface IProps {
         doctor: Doctor;
@@ -23,11 +25,23 @@
 
 <main class:grid={$currentBlock === null}>
     {#if permissionGroups.includes("patients")}
+        <ManageAppointments
+            user={doctor}
+            cabinet={$currentCabinet as Cabinet}
+            {permissions}
+        />
+    {/if}
+
+    {#if permissionGroups.includes("patients")}
         <ManagePatients user={doctor} cabinet={$currentCabinet as Cabinet} />
     {/if}
 
     {#if permissionGroups.includes("assistants")}
         <ManageAssistants user={doctor} {permissions} />
+    {/if}
+
+    {#if permissionGroups.includes("messages")}
+        <Messages />
     {/if}
 
     {#if permissionGroups.includes("calendar")}

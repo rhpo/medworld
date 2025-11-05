@@ -481,7 +481,10 @@ export const fakeDoctors: Doctor[] = [
     makeDoctor(24, 'Sarah', 'Zerrouki', 'sarah.zerrouki@medworld.dz', '+213 555 456 789', Speciality.DERMATOLOGY)
 ];
 
+for (const cab of fakeCabinets) {
 
+    (cab.doctors) = fakeDoctors;
+}
 
 fakeDoctors[0].assistants = [fakeAssistants[0], fakeAssistants[1]];
 fakeAssistants[0].doctors = [fakeDoctors[0]];

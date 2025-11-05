@@ -2,7 +2,7 @@
     import tippy from "sveltejs-tippy";
 
     interface Props {
-        category?: "textarea" | "input";
+        category?: "textarea" | "input" | "display";
         theme?: "primary" | "secondary";
         type?: string;
         label?: string;
@@ -13,6 +13,7 @@
         name?: string;
         showLabel?: boolean;
         showTooltip?: boolean;
+        onInput?: any;
     }
 
     let {
@@ -27,6 +28,7 @@
         error = "",
         required = false,
         name = "",
+        onInput = () => {},
     }: Props = $props();
 
     label = label || placeholder || "Enter text here...";
@@ -48,11 +50,12 @@
             class:primary={theme === "primary"}
             class:secondary={theme === "secondary"}
             {placeholder}
+            oninput={onInput}
             class:error
             {required}
             {name}
         ></textarea>
-    {:else}
+    {:else if category === "input"}
         <input
             class="input"
             use:tippy={{ content: label, placement: "auto" }}
@@ -62,10 +65,13 @@
             class:secondary={theme === "secondary"}
             bind:value
             {placeholder}
+            oninput={onInput}
             class:error
             {required}
             {name}
         />
+    {:else}
+        <p>{value}</p>
     {/if}
     {#if error}
         <span class="error-message">{error}</span>

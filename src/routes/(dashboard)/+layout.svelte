@@ -80,7 +80,7 @@
 
     <View>
       <nav>
-        <a class="logo" href="/">
+        <a class="logo" href="/dashboard">
           <div class="icon">
             <Logo rotate />
           </div>
@@ -123,8 +123,10 @@
                 href="/dashboard/plans">Subscriptions</Button
               >
 
-              <Button category="secondary" Icon={User} href="/dashboard/profile"
-                >My Profile</Button
+              <Button
+                category="secondary"
+                Icon={User}
+                href="/dashboard/users/{$user?.id}/modify">My Profile</Button
               >
 
               <Button category="error" Icon={LogOut} href="/admin/logout"

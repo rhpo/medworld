@@ -11,6 +11,7 @@
     import { Specialities } from "$lib/types/speciality";
     import View from "$lib/components/ui/View.svelte";
     import { user } from "$lib/stores";
+    import { preventDefault } from "svelte/legacy";
 
     const userId = Number(page.params.id);
 
@@ -145,8 +146,12 @@
             {:else if errorMessage}
                 <p class="error">{errorMessage}</p>
             {:else if $user}
-                <form on:submit|preventDefault={handleSubmit}>
-                    <!-- Basic Information for All Users -->
+                <form
+                    onsubmit={(e) => {
+                        e.preventDefault();
+                        handleSubmit;
+                    }}
+                >
                     <div class="form-section">
                         <h3>Basic Information</h3>
                         <div class="form-row">
@@ -194,7 +199,7 @@
                                 <label for="dateOfBirth">Date of Birth</label>
                                 <Input
                                     type="date"
-                                    bind:value={formData.dateOfBirth}
+                                    bind:value={formData.dateOfBirth as any}
                                 />
                             </div>
 
@@ -222,7 +227,6 @@
                         </div>
                     </div>
 
-                    <!-- Doctor Specific Fields -->
                     {#if $user.type === Users.Doctor}
                         <div class="form-section">
                             <h3>Professional Information</h3>
@@ -267,7 +271,6 @@
                         </div>
                     {/if}
 
-                    <!-- Patient Specific Fields -->
                     {#if $user.type === Users.Patient}
                         <div class="form-section">
                             <h3>Medical Information</h3>
@@ -309,7 +312,7 @@
                                             <button
                                                 type="button"
                                                 class="chip-remove"
-                                                on:click={() =>
+                                                onclick={() =>
                                                     removeAllergy(index)}
                                                 >×</button
                                             >
@@ -318,7 +321,7 @@
                                     <button
                                         type="button"
                                         class="add-chip"
-                                        on:click={addAllergy}
+                                        onclick={addAllergy}
                                         >+ Add Allergy</button
                                     >
                                 </div>
@@ -326,7 +329,6 @@
                         </div>
                     {/if}
 
-                    <!-- Form Actions -->
                     <div class="actions">
                         <Button
                             type="submit"

@@ -1,7 +1,6 @@
 <script lang="ts">
   import "../../app.css";
 
-  // AOS Library
   import AOS from "aos";
   import "aos/dist/aos.css";
 

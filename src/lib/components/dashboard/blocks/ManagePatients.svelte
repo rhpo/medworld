@@ -75,7 +75,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>Avatar</th>
+                    <th class="desktop">Avatar</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
@@ -85,7 +85,7 @@
             <tbody>
                 {#each filteredPatients as patient}
                     <tr>
-                        <td>
+                        <td class="desktop">
                             <Avatar
                                 size="48px"
                                 avatarUrl={patient.avatarUrl}

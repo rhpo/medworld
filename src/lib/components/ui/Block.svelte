@@ -2,6 +2,7 @@
     import { currentBlock } from "$lib/stores";
     import type { Group } from "$lib/types/permission";
     import { ArrowLeft } from "@lucide/svelte";
+    import { blur, fly, scale } from "svelte/transition";
 
     interface IProps {
         title?: string;
@@ -29,7 +30,11 @@
         </div>
     </main>
 {:else if $currentBlock === null}
-    <button class="card" onclick={() => currentBlock.set(group)}>
+    <button
+        class="card"
+        onclick={() => currentBlock.set(group)}
+        transition:scale
+    >
         {#if Icon}
             <Icon />
         {/if}
@@ -117,10 +122,6 @@
         gap: 0;
     }
 
-    h2 + .container {
-        margin-top: 1.2rem;
-    }
-
     h2 {
         font-family: var(--font-secondary);
         margin: 0;
@@ -147,5 +148,26 @@
         box-shadow:
             0 10px 15px -3px rgba(0, 0, 0, 0.1),
             0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    @media (max-width: 768px) {
+        .back h2 {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .container {
+            padding: 0;
+            background-color: transparent;
+            box-shadow: none;
+            overflow-x: auto;
+        }
+
+        .container:hover {
+            padding: 0;
+            background-color: transparent;
+            box-shadow: none;
+            overflow-x: auto;
+        }
     }
 </style>
