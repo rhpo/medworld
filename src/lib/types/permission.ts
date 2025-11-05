@@ -214,6 +214,16 @@ export function hasPermission(user: User<any>, permission: Permission): boolean 
 
 export type Group = 'patients' | 'assistants' | 'doctors' | 'appointments' | 'book_appointment' | 'calendar' | 'messages' | 'cabinets';
 
+/**
+ * Maps permissions to their corresponding group boolean values.
+ *
+ * This function takes an array of permissions and returns an object where each key represents a
+ * specific group (e.g., cabinets, patients, assistants, etc.) and the value indicates whether
+ * the group has any associated permissions. It utilizes filtering and checking methods to determine
+ * the presence of relevant permissions for each group.
+ *
+ * @param {Permission[]} permissions - An array of permissions to evaluate.
+ */
 export function permissionGroupMap(permissions: Permission[]): Record<Group, boolean> {
     return {
         cabinets:
