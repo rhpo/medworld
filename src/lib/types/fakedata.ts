@@ -164,6 +164,9 @@ export const fakeAdmins: Admin[] = [
   },
 ];
 
+/**
+ * Creates an Assistant object with specified details.
+ */
 const makeAssistant = (
   id: number,
   firstName: string,
@@ -471,6 +474,9 @@ export const fakeCabinets: Cabinet[] = [
   },
 ];
 
+/**
+ * Creates a Doctor object with the specified details.
+ */
 const makeDoctor = (
   id: number,
   firstName: string,
