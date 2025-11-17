@@ -181,6 +181,15 @@ export const PatientPermissions: Permission[] = [
 ];
 
 // Usqble Functions
+/**
+ * Retrieve the permissions associated with a specific user type.
+ *
+ * The function uses a switch statement to determine the permissions based on the provided user type.
+ * It returns an array of permissions corresponding to the user type, or an empty array if the type is unrecognized.
+ *
+ * @param type - The user type for which to retrieve permissions.
+ * @returns An array of permissions associated with the specified user type.
+ */
 export function getPermissionsFromUserType(type: UserType): Permission[] {
   switch (type) {
     case Users.SuperAdmin:
@@ -198,6 +207,9 @@ export function getPermissionsFromUserType(type: UserType): Permission[] {
   }
 }
 
+/**
+ * Checks if a user has a specific permission.
+ */
 export function hasPermission(
   user: User<any>,
   permission: Permission
@@ -215,6 +227,16 @@ export type Group =
   | "messages"
   | "cabinets";
 
+/**
+ * Maps permissions to their corresponding group boolean values.
+ *
+ * This function takes an array of permissions and returns an object where each key represents a
+ * specific group (e.g., cabinets, patients, assistants, doctors) and the value indicates whether
+ * the group has any associated permissions. It checks for specific suffixes and includes certain
+ * permissions to determine the boolean values for each group.
+ *
+ * @param {Permission[]} permissions - An array of permissions to evaluate.
+ */
 export function permissionGroupMap(
   permissions: Permission[]
 ): Record<Group, boolean> {
@@ -239,6 +261,9 @@ export function permissionGroupMap(
   };
 }
 
+/**
+ * Groups permissions into an array of Group types.
+ */
 export function groupPermissions(permissions: Permission[]): Group[] {
   const map = permissionGroupMap(permissions);
   return Object.keys(map).filter((key) => map[key as Group]) as Group[];
