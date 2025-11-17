@@ -1,211 +1,203 @@
 <script lang="ts">
-    import AdminDashboard from "$lib/components/dashboard/AdminDashboard.svelte";
-    import AssistantDashboard from "$lib/components/dashboard/AssistantDashboard.svelte";
-    import CabinetSelector from "$lib/components/dashboard/blocks/cabinets/CabinetSelector.svelte";
-    import DoctorDashboard from "$lib/components/dashboard/DoctorDashboard.svelte";
-    import PatientDashboard from "$lib/components/dashboard/PatientDashboard.svelte";
-    import SuperAdminDashboard from "$lib/components/dashboard/SuperAdminDashboard.svelte";
-    import Avatar from "$lib/components/ui/Avatar.svelte";
-    import View from "$lib/components/ui/View.svelte";
+  import AdminDashboard from "$lib/components/dashboard/AdminDashboard.svelte";
+  import AssistantDashboard from "$lib/components/dashboard/AssistantDashboard.svelte";
+  import CabinetSelector from "$lib/components/dashboard/blocks/cabinets/CabinetSelector.svelte";
+  import DoctorDashboard from "$lib/components/dashboard/DoctorDashboard.svelte";
+  import PatientDashboard from "$lib/components/dashboard/PatientDashboard.svelte";
+  import SuperAdminDashboard from "$lib/components/dashboard/SuperAdminDashboard.svelte";
+  import Avatar from "$lib/components/ui/Avatar.svelte";
+  import View from "$lib/components/ui/View.svelte";
 
-    import { currentCabinet, user } from "$lib/stores";
+  import { currentCabinet, user } from "$lib/stores";
 
-    import {
-        fakeAdmins,
-        fakeAssistants,
-        fakeDoctors,
-        fakePatients,
-        fakeSuperAdmin,
-    } from "$lib/types/fakedata";
+  import {
+    fakeAdmins,
+    fakeAssistants,
+    fakeDoctors,
+    fakePatients,
+    fakeSuperAdmin,
+  } from "$lib/types/fakedata";
 
-    import { Users, UserTypeNames, type UserType } from "$lib/types/users";
+  import { Users, UserTypeNames, type UserType } from "$lib/types/users";
 
-    import type { Admin } from "$lib/types/users/admin";
-    import type { Assistant } from "$lib/types/users/assistant";
-    import type { Doctor } from "$lib/types/users/doctor";
-    import type { Patient } from "$lib/types/users/patient";
-    import type { SuperAdmin } from "$lib/types/users/superadmin";
-    import { ArrowLeft } from "@lucide/svelte";
-    import { scale } from "svelte/transition";
+  import type { Admin } from "$lib/types/users/admin";
+  import type { Assistant } from "$lib/types/users/assistant";
+  import type { Doctor } from "$lib/types/users/doctor";
+  import type { Patient } from "$lib/types/users/patient";
+  import type { SuperAdmin } from "$lib/types/users/superadmin";
+  import { ArrowLeft } from "@lucide/svelte";
+  import { scale } from "svelte/transition";
 
-    let currentDemoAccountType: UserType = Users.Doctor;
+  let currentDemoAccountType: UserType = Users.Doctor;
 </script>
 
 {#if $user}
-    <View style="padding-top: 2rem;">
-        <button
-            class="welcome"
-            class:action={$currentCabinet !== null}
-            onclick={() => currentCabinet.set(null)}
-        >
-            {#if $currentCabinet !== null}
-                <div class="icon" transition:scale>
-                    <ArrowLeft size="2rem" />
-                </div>
-            {/if}
-
-            <div class="wrapper">
-                <Avatar
-                    size="4rem"
-                    avatarUrl={$user.avatarUrl}
-                    alt={$user.firstName + " " + $user.lastName}
-                    original
-                />
-
-                <div class="info">
-                    <h1>
-                        Welcome, {$user.type === Users.Doctor ||
-                        $user.type === Users.Admin
-                            ? "Dr. "
-                            : ""}
-                        {$user.firstName}
-                        {$user.type === Users.Admin ? " (Admin)" : ""}
-                        {$user.type === Users.SuperAdmin ? " (SuperAdmin)" : ""}
-                    </h1>
-
-                    {#if $currentCabinet}
-                        <h3 class="cabinet">
-                            At {$currentCabinet.name}
-                        </h3>
-                    {/if}
-                </div>
-            </div>
-        </button>
-
-        {#if $currentCabinet === null}
-            <CabinetSelector
-                user={$user}
-                bind:selectedCabinet={$currentCabinet}
-            />
-        {:else if $user.type === Users.Doctor}
-            <DoctorDashboard doctor={$user as Doctor} />
-        {:else if $user.type === Users.Patient}
-            <PatientDashboard patient={$user as Patient} />
-        {:else if $user.type === Users.SuperAdmin}
-            <SuperAdminDashboard superadmin={$user as SuperAdmin} />
-        {:else if $user.type === Users.Admin}
-            <AdminDashboard admin={$user as Admin} />
-        {:else if $user.type === Users.Assistant}
-            <AssistantDashboard assistant={$user as Assistant} />
-        {:else}
-            <h2 style="color: var(--error)">
-                Unsupported Account type: {$user.type}
-            </h2>
-        {/if}
-
-        <div style="margin-bottom: 2rem;">
-            <h4>Demo Helper</h4>
-
-            Account Type:
-            <!-- I'm here! -->
-            <select bind:value={currentDemoAccountType}>
-                {#each Object.keys(UserTypeNames) as userType}
-                    <option value={userType}
-                        >{UserTypeNames[userType as UserType]}</option
-                    >
-                {/each}
-            </select>
-
-            <br />
-
-            Available {currentDemoAccountType}s :
-            <select bind:value={$user}>
-                {#if currentDemoAccountType === Users.Doctor}
-                    {#each fakeDoctors as doctor}
-                        <option value={doctor}>{doctor.getFullName()}</option>
-                    {/each}
-                {:else if currentDemoAccountType === Users.SuperAdmin}
-                    <option value={fakeSuperAdmin}
-                        >{fakeSuperAdmin.getFullName()}</option
-                    >
-                {:else if currentDemoAccountType === Users.Admin}
-                    {#each fakeAdmins as user}
-                        <option value={user}
-                            >{user.getFullName()} ({(user as Admin).plan
-                                .name})</option
-                        >
-                    {/each}
-                {:else if currentDemoAccountType === Users.Assistant}
-                    {#each fakeAssistants as user}
-                        <option value={user}>{user.getFullName()}</option>
-                    {/each}
-                {:else if currentDemoAccountType === Users.Patient}
-                    {#each fakePatients as user}
-                        <option value={user}>{user.getFullName()}</option>
-                    {/each}
-                {/if}
-            </select>
+  <View style="padding-top: 2rem;">
+    <button
+      class="welcome"
+      class:action={$currentCabinet !== null}
+      onclick={() => currentCabinet.set(null)}
+    >
+      {#if $currentCabinet !== null}
+        <div class="icon" transition:scale>
+          <ArrowLeft size="2rem" />
         </div>
-    </View>
+      {/if}
+
+      <div class="wrapper">
+        <Avatar
+          size="4rem"
+          avatarUrl={$user.avatarUrl}
+          alt={$user.firstName + " " + $user.lastName}
+          original
+        />
+
+        <div class="info">
+          <h1>
+            Welcome, {$user.type === Users.Doctor || $user.type === Users.Admin
+              ? "Dr. "
+              : ""}
+            {$user.firstName}
+            {$user.type === Users.Admin ? " (Admin)" : ""}
+            {$user.type === Users.SuperAdmin ? " (SuperAdmin)" : ""}
+          </h1>
+
+          {#if $currentCabinet}
+            <h3 class="cabinet">
+              At {$currentCabinet.name}
+            </h3>
+          {/if}
+        </div>
+      </div>
+    </button>
+
+    {#if $currentCabinet === null && $user.type !== "patient"}
+      <CabinetSelector user={$user} bind:selectedCabinet={$currentCabinet} />
+    {:else if $user.type === Users.Doctor}
+      <DoctorDashboard doctor={$user as Doctor} />
+    {:else if $user.type === Users.Patient}
+      <PatientDashboard patient={$user as Patient} />
+    {:else if $user.type === Users.SuperAdmin}
+      <SuperAdminDashboard superadmin={$user as SuperAdmin} />
+    {:else if $user.type === Users.Admin}
+      <AdminDashboard admin={$user as Admin} />
+    {:else if $user.type === Users.Assistant}
+      <AssistantDashboard assistant={$user as Assistant} />
+    {:else}
+      <h2 style="color: var(--error)">
+        Unsupported Account type: {$user.type}
+      </h2>
+    {/if}
+
+    <div style="margin-bottom: 2rem;">
+      <h4>Demo Helper</h4>
+
+      Account Type:
+      <!-- I'm here! -->
+      <select bind:value={currentDemoAccountType}>
+        {#each Object.keys(UserTypeNames) as userType}
+          <option value={userType}>{UserTypeNames[userType as UserType]}</option
+          >
+        {/each}
+      </select>
+
+      <br />
+
+      Available {currentDemoAccountType}s :
+      <select bind:value={$user}>
+        {#if currentDemoAccountType === Users.Doctor}
+          {#each fakeDoctors as doctor}
+            <option value={doctor}>{doctor.getFullName()}</option>
+          {/each}
+        {:else if currentDemoAccountType === Users.SuperAdmin}
+          <option value={fakeSuperAdmin}>{fakeSuperAdmin.getFullName()}</option>
+        {:else if currentDemoAccountType === Users.Admin}
+          {#each fakeAdmins as user}
+            <option value={user}
+              >{user.getFullName()} ({(user as Admin).plan.name})</option
+            >
+          {/each}
+        {:else if currentDemoAccountType === Users.Assistant}
+          {#each fakeAssistants as user}
+            <option value={user}>{user.getFullName()}</option>
+          {/each}
+        {:else if currentDemoAccountType === Users.Patient}
+          {#each fakePatients as user}
+            <option value={user}>{user.getFullName()}</option>
+          {/each}
+        {/if}
+      </select>
+    </div>
+  </View>
 {/if}
 
 <style>
-    .action {
-        cursor: pointer;
+  .action {
+    cursor: pointer;
+  }
+
+  .welcome {
+    gap: 1rem;
+    background-color: transparent;
+    border: none;
+
+    display: flex;
+    align-items: center;
+
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+
+    border-bottom: 1px solid var(--border-color-light);
+
+    text-align: left;
+  }
+
+  .welcome .wrapper {
+    display: flex;
+
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .welcome h1 {
+    font-size: 3rem;
+  }
+
+  .welcome .info {
+    display: flex;
+    flex-direction: column;
+
+    margin-left: 0.5rem;
+  }
+
+  .welcome .cabinet {
+    font-size: 1.25rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+  }
+
+  .action:hover .cabinet {
+    text-decoration: underline;
+  }
+
+  .action .icon {
+    transition: transform 0.2s ease-in-out;
+  }
+  .action:hover .icon {
+    transform: translateX(-5px);
+  }
+
+  @media screen and (max-width: 1000px) {
+    .info h1 {
+      font-size: 1rem;
+    }
+
+    .info .cabinet {
+      font-size: 1rem;
     }
 
     .welcome {
-        gap: 1rem;
-        background-color: transparent;
-        border: none;
-
-        display: flex;
-        align-items: center;
-
-        padding-bottom: 2rem;
-        margin-bottom: 2rem;
-
-        border-bottom: 1px solid var(--border-color-light);
-
-        text-align: left;
+      margin-bottom: 0;
     }
-
-    .welcome .wrapper {
-        display: flex;
-
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .welcome h1 {
-        font-size: 3rem;
-    }
-
-    .welcome .info {
-        display: flex;
-        flex-direction: column;
-
-        margin-left: 0.5rem;
-    }
-
-    .welcome .cabinet {
-        font-size: 1.25rem;
-        font-weight: 300;
-        color: var(--text-secondary);
-    }
-
-    .action:hover .cabinet {
-        text-decoration: underline;
-    }
-
-    .action .icon {
-        transition: transform 0.2s ease-in-out;
-    }
-    .action:hover .icon {
-        transform: translateX(-5px);
-    }
-
-    @media screen and (max-width: 1000px) {
-        .info h1 {
-            font-size: 1rem;
-        }
-
-        .info .cabinet {
-            font-size: 1rem;
-        }
-
-        .welcome {
-            margin-bottom: 0;
-        }
-    }
+  }
 </style>

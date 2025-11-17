@@ -1,10 +1,9 @@
-
 @import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Amiri&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Tifinagh&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Momo+Signature&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Momo+Signature&display=swap");
 
 html {
   min-height: fit-content;
@@ -42,15 +41,12 @@ body {
   font-style: normal;
 }
 
-
 :root {
   /* notification */
   --notification-height: 30px;
 
   /* view */
   --view-max: 1600px;
-
-
 
   --color-primary: rgb(44, 139, 234);
   --color-primary-light: rgb(109, 177, 244);
@@ -74,10 +70,10 @@ body {
 
   --error: #d73235;
   --error-dark: #c22729;
+  --error-darker: rgb(167, 22, 25);
 
   --gold: #c99314;
-  --gold-dark: #AA6C39;
-
+  --gold-dark: #aa6c39;
 
   --font-brand: "Minigap", serif;
   --font-primary: var(--font-brand);
@@ -85,13 +81,11 @@ body {
   --font-secondary: "Inter", "Amiri", "Noto Sans Tifinagh", sans-serif;
   --font-third: "JetBrains Mono", monospace;
 
-
   --container-max: 1400px;
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
   --border-radius-lg: 12px;
   --border-radius-xl: 16px;
-
 
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 0.3s ease-out;
@@ -99,7 +93,6 @@ body {
 
   --transition-duration: 0.3s;
   --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
-
 
   --padding: 0;
   --color: var(--color-primary-darker);
@@ -121,7 +114,6 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
-
 
 /*
 html,
@@ -183,7 +175,6 @@ body {
   padding: 0 2rem;
 }
 
-
 .fade-in {
   animation: fadeIn 0.8s ease-out;
 }
@@ -211,7 +202,6 @@ body {
     transform: translateY(0);
   }
 }
-
 
 h1 {
   font-family: var(--font-primary);
@@ -247,7 +237,6 @@ h3 {
   color: var(--text-light);
 }
 
-
 @media (max-width: 768px) {
   .view {
     padding: 0 1rem;
@@ -269,7 +258,6 @@ h3 {
     font-size: 0.85rem;
   }
 }
-
 
 .spinner {
   width: 40px;
@@ -300,89 +288,79 @@ a:hover {
   color: var(--primary-light);
 }
 
-
 .invisible {
   opacity: 0;
   pointer-events: none;
-
 }
 
 .none {
   display: none;
 }
 
+table {
+  border-collapse: collapse;
+  width: 100%;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: var(--background-primary);
+}
 
+tr {
+  border-bottom: 1px solid #e5e7eb;
+}
 
- table {
-        border-collapse: collapse;
-        width: 100%;
-        border-radius: 1rem;
-        overflow: hidden;
-        background-color: var(--background-primary);
-    }
+th,
+td {
+  padding: 1rem;
+  text-align: left;
+}
 
-    tr {
-        border-bottom: 1px solid #e5e7eb;
+th {
+  background-color: #f9fafb;
+  font-weight: 600;
+}
 
-    }
+table img {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  object-fit: cover;
+}
 
-    th,
-    td {
-        padding: 1rem;
-        text-align: left;
-    }
-
-    th {
-        background-color: #f9fafb;
-        font-weight: 600;
-    }
-
-
-
-    table img {
-        width: 2rem;
-        height: 2rem;
-        border-radius: 9999px;
-        object-fit: cover;
-    }
-
-
-
-    @media (max-width: 768px) {
-
-      .desktop {
-        display: none;
-      }
-
-      table {
-        overflow-x: scroll;
-      }
-
-      table th, table td {
-        font-size: 0.8rem;
-      }
-
-      table td {
-        padding: 0.5rem;
-      }
-
-      table .actions {
-        flex-direction: column;
-      }
-    }
-
-    .search-container {
-        margin-bottom: 1rem;
-    }
-
-
-    :global(.tooltip) {
-    font-size: 1.2rem;
-    text-transform: uppercase;
+@media (max-width: 768px) {
+  .desktop {
+    display: none;
   }
 
-    main.grid {
-        display: grid !important;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
-        gap: 1rem !important;
-    }
+  table {
+    overflow-x: scroll;
+  }
+
+  table th,
+  table td {
+    font-size: 0.8rem;
+  }
+
+  table td {
+    padding: 0.5rem;
+  }
+
+  table .actions {
+    flex-direction: column;
+  }
+}
+
+.search-container {
+  margin-bottom: 1rem;
+}
+
+:global(.tooltip) {
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+main.grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+  gap: 1rem !important;
+}
