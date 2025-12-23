@@ -60,6 +60,9 @@ export const DEFAULT_WEIGHTS: Weights = {
 };
 
 export function calculateRatingScore(cabinet: Cabinet, weights: Weights = DEFAULT_WEIGHTS): number {
+
+    if (!cabinet || !cabinet.ratings) return 0;
+
     let totalScore = 0;
     let totalWeight = 0;
     for (const rating of cabinet.ratings) {

@@ -13,6 +13,7 @@
         Icon?: any;
         color?: string;
         onClick?: () => void;
+        disabled?: boolean;
         children?: Snippet;
     }
 
@@ -25,6 +26,7 @@
         Icon,
         color = "",
         onClick = () => {},
+        disabled = false,
         children,
         ...rest
     }: Props = $props();
@@ -66,6 +68,7 @@
         class:secondary={type === "secondary"}
         class:error={type === "error"}
         style={color ? `background-color: ${color} !important;` : ""}
+        {disabled}
         {...rest}
     >
         {@render children?.()}

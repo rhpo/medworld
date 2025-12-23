@@ -10,6 +10,7 @@
         type Fillable,
     } from "$lib/validation";
     import { AuthAPI, UserAPI } from "$lib/api";
+    import { goto } from "$app/navigation";
 
     let data: Fillable = $state({
         email: {
@@ -42,6 +43,8 @@
             if (response && response.user) {
                 // Successfully logged in
                 // Redirect to dashboard
+                localStorage.setItem("authToken", response.token);
+                localStorage.setItem("user", JSON.stringify(response.user));
                 window.location.href = "/dashboard";
             } else {
                 alert("Login failed. Please check your credentials.");

@@ -86,6 +86,7 @@ export async function loadAllCabinets() {
     cabinetError.set(null);
     try {
         const data = await AllAPI.listAllCabinets();
+        console.log("Cabinets:", data);
         cabinets.set(data);
     } catch (error: any) {
         cabinetError.set(error.message || 'Failed to load cabinets');

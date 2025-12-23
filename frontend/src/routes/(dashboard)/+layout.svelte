@@ -69,7 +69,11 @@
 
 <svelte:head>
   <link rel="icon" href={logo} />
-  <title>{SITE_NAME} - {$user?.getFullName()}</title>
+  <title
+    >{SITE_NAME} - {$user
+      ? `${$user.firstName} ${$user.lastName}`
+      : "Dashboard"}</title
+  >
 </svelte:head>
 
 <main class:full={isMenuOpen}>
@@ -103,11 +107,13 @@
               <ArrowRight />
             </span>
 
-            <h3>{$user?.getFullName()}</h3>
+            <h3>
+              {$user ? `${$user.firstName} ${$user.lastName}` : "Loading..."}
+            </h3>
 
             <div class="avatar">
               <Avatar
-                alt={$user?.getFullName()}
+                alt={$user ? `${$user.firstName} ${$user.lastName}` : "User"}
                 avatarUrl={$user?.avatarUrl}
                 size="48px"
                 original
@@ -129,7 +135,7 @@
                 href="/dashboard/users/{$user?.id}">My Profile</Button
               >
 
-              <Button category="error" Icon={LogOut} href="/admin/logout"
+              <Button category="error" Icon={LogOut} href="/accounts/logout"
                 >Logout</Button
               >
             </div>

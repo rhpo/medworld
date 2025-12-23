@@ -59,8 +59,8 @@ export const AllAPI = {
     },
 
     async listAllCabinets(): Promise<Cabinet[]> {
-        const response = await apiClient.get<{ data: Cabinet[] }>('/all/cabinets');
-        return response.data || [];
+        const response = await apiClient.get<Cabinet[]>('/all/cabinets');
+        return response || [];
     },
 
     async listAllUsers(): Promise<User<any>[]> {
@@ -102,6 +102,10 @@ export const CabinetAPI = {
     async getAssistants(cabinetId: number): Promise<Assistant[]> {
         const response = await apiClient.get<{ data: Assistant[] }>(`/cabinets/${cabinetId}/assistants`);
         return response.data || [];
+    },
+
+    async create(cabinet: Partial<Cabinet>): Promise<Cabinet> {
+        return apiClient.post('/cabinets', cabinet);
     }
 };
 

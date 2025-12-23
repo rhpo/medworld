@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\User;
+
+class UserPolicy
+{
+    public function before(User $user, $ability)
+    {
+        // Superadmin can do everything
+        if ($user->type === 'superadmin') {
+            return true;
+        }
+    }
+
+    public function viewAny(User $user)
+    {
+        return in_array($user->type, ['superadmin', 'admin']);
+    }
+
+    public function view(User $user, User $model)
+    {
+        return $user->id === $model->id || in_array($user->type, ['superadmin', 'admin']);
+    }
+
+    public function create(User $user)
+    {
+        return in_array($user->type, ['superadmin', 'admin']);
+    }
+
+    public function update(User $user, User $model)
+    {
+        return $user->id === $model->id || in_array($user->type, ['superadmin', 'admin']);
+    }
+
+    public function delete(User $user, User $model)
+    {
+        return in_array($user->type, ['superadmin', 'admin']);
+    }
+}

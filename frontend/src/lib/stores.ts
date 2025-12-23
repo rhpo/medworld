@@ -10,23 +10,36 @@ export async function loadUser() {
     try {
         // First, check if we have a valid token
         const token = localStorage.getItem('authToken');
+        const storedUser = localStorage.getItem('user');
+
         if (!token) {
             // No token, user is not authenticated
             user.set(null);
             return null;
         }
 
-        // Try to fetch current user from API using the token
+        // If we have a stored user, set it initially to avoid flicker
+        if (storedUser) {
+            try {
+                user.set(JSON.parse(storedUser));
+            } catch (e) {
+                console.error('Error parsing stored user:', e);
+            }
+        }
+
+        // Try to fetch current user from API using the token to ensure it's still valid
         const result = await AuthAPI.me();
         if (result && result.user) {
             user.set(result.user);
-            // Update userID in localStorage
+            // Update localStorage
+            localStorage.setItem('user', JSON.stringify(result.user));
             localStorage.setItem('userID', result.user.id.toString());
             return result.user;
         } else {
             // API call failed or user not found, clear auth
             user.set(null);
             localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
             localStorage.removeItem('userID');
             return null;
         }
@@ -34,6 +47,7 @@ export async function loadUser() {
         // Error loading user, clear auth state
         user.set(null);
         localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
         localStorage.removeItem('userID');
         console.error('Error loading user:', error);
         return null;

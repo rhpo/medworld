@@ -7,6 +7,7 @@
     import type { SuperAdmin } from "$lib/types/users/superadmin";
     import { Plus, Save, MapPin, Clock } from "@lucide/svelte";
     import MapSelector from "./MapSelector.svelte";
+    import { CabinetAPI } from "$lib/api";
     import { validate, validation, type Fillable } from "$lib/validation";
 
     interface IProps {
@@ -68,56 +69,73 @@
 
     async function handleSave() {
         console.log("===== SAVE CLICKED =====");
-        console.log("Permissions:", permissions);
-        console.log("Has add_cabinet?", permissions.includes("add_cabinet"));
-        console.log("Name:", newCabinet.name);
-        console.log("Phone:", newCabinet.phone);
-        console.log("Location:", newCabinet.location);
 
+        // 1. Check permissions
         if (!permissions.includes("add_cabinet")) {
             console.error("BLOCKED: No permission");
-            alert("You don't have permission");
+            alert("You don't have permission to add a cabinet.");
             return;
         }
 
-        if (!newCabinet.name?.trim() || !newCabinet.phone?.trim()) {
+        // 2. Validate fields
+        validateField("name");
+        validateField("phoneNumber");
+
+        if (data.name.error || data.phoneNumber.error) {
+            console.error("BLOCKED: Validation errors");
+            return;
+        }
+
+        const name = data.name.value;
+        const phone = data.phoneNumber.value;
+
+        if (!name?.trim() || !phone?.trim()) {
             console.error("BLOCKED: Missing fields");
-            alert("Fill name and phone");
+            alert("Please fill in the cabinet name and phone number.");
             return;
         }
 
-        if (
-            !newCabinet.location?.address ||
-            newCabinet.location.address === ""
-        ) {
+        // 3. Check location
+        if (!locationSelected || !newCabinet.location?.address) {
             console.error("BLOCKED: No location selected");
-            alert("Please select a location on the map");
+            alert(
+                "Please select a location on the map or search for an address.",
+            );
             return;
         }
 
         isSaving = true;
         try {
-            console.log("Creating cabinet...");
+            console.log("Creating cabinet:", {
+                name,
+                phone,
+                location: newCabinet.location,
+                openingHours: workingHours,
+            });
 
-            // console.log('Cabinet created with ID:', id);
-            console.log("Adding to store...");
+            const cabinet = await CabinetAPI.create({
+                name,
+                phone,
+                location: newCabinet.location,
+                openingHours: workingHours,
+                accessHandicap: newCabinet.accessHandicap,
+                hasParking: newCabinet.hasParking,
+                hasWifi: newCabinet.hasWifi,
+                acceptsUrgent: newCabinet.acceptsUrgent,
+                acceptsInsurance: newCabinet.acceptsInsurance,
+            });
 
-            console.log("✓ Store updated");
-
-            notificationMessage = `Cabinet added!`;
+            notificationMessage = `Cabinet "${name}" added successfully!`;
             showSuccessNotification = true;
-            console.log("✓ Notification set");
 
-            // onAdd(cabinet);
-            console.log("✓ Callback called");
+            if (onAdd) onAdd(cabinet);
 
             setTimeout(() => {
-                console.log("Closing form...");
                 onClose();
             }, 2000);
         } catch (error) {
             console.error("FATAL ERROR:", error);
-            alert("Error: " + String(error));
+            alert("Error saving cabinet: " + String(error));
         } finally {
             isSaving = false;
         }
@@ -142,27 +160,6 @@
             : "";
         field.error = validationError;
     }
-
-    function add() {
-        validateField("name");
-        validateField("phoneNumber");
-
-        // Check if any field has error
-        const hasErrors = Object.keys(data).some(
-            (key) => data[key as keyof typeof data].error !== "",
-        );
-
-        if (hasErrors) {
-            alert("Please correct the errors in the form.");
-            return;
-        }
-
-        let error = validate(data);
-        if (error) {
-            return alert(error);
-        }
-        window.location.href = "/dashboard";
-    }
 </script>
 
 <Block Icon={Plus} group="add_cabinet" title="Add New Cabinet">
@@ -175,32 +172,43 @@
     {/if}
 
     <div class="form">
-        <Input
-            label="Cabinet Name"
-            placeholder="Enter cabinet name"
-            bind:value={data.name.value}
-            bind:error={data.name.error}
-            validation={data.name.validator}
-            theme="secondary"
-            showLabel={true}
-            required={true}
-        />
+        <div class="form-section">
+            <div class="section-header">
+                <Plus size={20} />
+                <h3>General Information</h3>
+            </div>
+            <div class="grid-2">
+                <Input
+                    label="Cabinet Name"
+                    placeholder="e.g. Central Medical Clinic"
+                    bind:value={data.name.value}
+                    bind:error={data.name.error}
+                    validation={data.name.validator}
+                    theme="secondary"
+                    showLabel={true}
+                    required={true}
+                />
 
-        <Input
-            label="Phone"
-            placeholder="Enter phone number"
-            bind:value={data.phoneNumber.value}
-            bind:error={data.phoneNumber.error}
-            validation={data.phoneNumber.validator}
-            theme="secondary"
-            showLabel={true}
-            required={true}
-            type="tel"
-        />
+                <Input
+                    label="Phone Number"
+                    placeholder="e.g. +213 555 123 456"
+                    bind:value={data.phoneNumber.value}
+                    bind:error={data.phoneNumber.error}
+                    validation={data.phoneNumber.validator}
+                    theme="secondary"
+                    showLabel={true}
+                    required={true}
+                    type="tel"
+                />
+            </div>
+        </div>
 
-        <div class="field">
-            <label><MapPin size={18} /> Location *</label>
-            <div class="map-container">
+        <div class="form-section">
+            <div class="section-header">
+                <MapPin size={20} />
+                <h3>Location</h3>
+            </div>
+            <div class="map-wrapper">
                 <MapSelector
                     location={newCabinet.location || {
                         address: "",
@@ -210,51 +218,83 @@
                     onChange={handleLocationChange}
                 />
             </div>
-            {#if newCabinet.location?.address && newCabinet.location.address !== ""}
-                <div class="location-info">
-                    <p>
-                        <strong>Selected:</strong>
-                        {newCabinet.location.address}
-                    </p>
-                    <p>
-                        <strong>Coordinates:</strong>
-                        {newCabinet.location.latitude.toFixed(4)}, {newCabinet.location.longitude.toFixed(
-                            4,
-                        )}
-                    </p>
-                </div>
-            {/if}
         </div>
 
-        <div class="field">
-            <label><Clock size={18} /> Opening Hours</label>
-            <div class="hours-grid">
-                {#each Object.entries(workingHours) as [day, hours]}
-                    <div class="day-hours">
-                        <span class="day-name">{day}</span>
-                        <div class="time-inputs">
-                            <Input
-                                type="time"
-                                bind:value={hours.open}
-                                disabled={hours.open === "Closed"}
-                                theme="secondary"
-                            />
-                            <span>to</span>
-                            <Input
-                                type="time"
-                                bind:value={hours.close}
-                                disabled={hours.close === "Closed"}
-                                theme="secondary"
-                            />
-                        </div>
-                    </div>
-                {/each}
+        <div class="form-section">
+            <div class="section-header">
+                <Clock size={20} />
+                <h3>Opening Hours</h3>
+            </div>
+            <div class="hours-table-container">
+                <table class="hours-table">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Status</th>
+                            <th>Opening Time</th>
+                            <th>Closing Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each Object.entries(workingHours) as [day, hours]}
+                            <tr class:closed={hours.open === "Closed"}>
+                                <td class="day-cell">{day}</td>
+                                <td class="status-cell">
+                                    <button
+                                        type="button"
+                                        class="status-toggle"
+                                        class:is-closed={hours.open ===
+                                            "Closed"}
+                                        onclick={() => {
+                                            if (hours.open === "Closed") {
+                                                hours.open = "09:00";
+                                                hours.close = "17:00";
+                                            } else {
+                                                hours.open = "Closed";
+                                                hours.close = "Closed";
+                                            }
+                                        }}
+                                    >
+                                        {hours.open === "Closed"
+                                            ? "Closed"
+                                            : "Open"}
+                                    </button>
+                                </td>
+                                <td class="time-cell">
+                                    {#if hours.open !== "Closed"}
+                                        <Input
+                                            type="time"
+                                            bind:value={hours.open}
+                                            theme="secondary"
+                                        />
+                                    {:else}
+                                        <span class="closed-label">-</span>
+                                    {/if}
+                                </td>
+                                <td class="time-cell">
+                                    {#if hours.close !== "Closed"}
+                                        <Input
+                                            type="time"
+                                            bind:value={hours.close}
+                                            theme="secondary"
+                                        />
+                                    {:else}
+                                        <span class="closed-label">-</span>
+                                    {/if}
+                                </td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
             </div>
         </div>
 
         <div class="actions">
-            <button onclick={onClose}>Cancel</button>
+            <button class="action-btn cancel-btn" onclick={onClose}
+                >Cancel</button
+            >
             <button
+                class="action-btn save-btn"
                 onclick={handleSave}
                 disabled={isSaving || !locationSelected}
             >
@@ -269,72 +309,130 @@
     .form {
         display: flex;
         flex-direction: column;
+        gap: 2.5rem;
+        padding: 1rem 0;
+    }
+
+    .form-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border-color-light);
+        color: var(--color-primary-dark);
+    }
+
+    .section-header h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 1.5rem;
     }
 
-    .field {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .field label {
-        font-weight: 500;
-        color: var(--text-primary);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .map-container {
-        border: 2px solid var(--border-color);
-        border-radius: var(--border-radius-md);
+    .map-wrapper {
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius-lg);
         overflow: hidden;
-        height: 350px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
-    .location-info {
-        padding: 0.75rem;
-        background: var(--color-primary-alpha);
-        border-radius: var(--border-radius-md);
-        margin-top: 0.5rem;
+    .hours-table-container {
+        background: var(--white);
+        border: 1px solid var(--border-color-light);
+        border-radius: var(--border-radius-lg);
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
-    .location-info p {
-        margin: 0.25rem 0;
-        font-size: 0.9rem;
-        color: var(--text-primary);
+    .hours-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
     }
 
-    .hours-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
+    .hours-table th {
+        background: var(--background-primary);
         padding: 1rem;
-        background: var(--background-secondary);
-        border-radius: var(--border-radius-md);
-    }
-
-    .day-hours {
-        display: grid;
-        grid-template-columns: 80px 80px auto 80px;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .day-name {
-        font-weight: 500;
-        font-size: 0.9rem;
-    }
-
-    .time-inputs {
-        display: contents;
-    }
-
-    .time-inputs span {
         font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
         color: var(--text-secondary);
+        border-bottom: 1px solid var(--border-color-light);
+    }
+
+    .hours-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border-color-light);
+        vertical-align: middle;
+    }
+
+    .hours-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .hours-table tr.closed {
+        background: var(--background-secondary);
+        opacity: 0.8;
+    }
+
+    .day-cell {
+        font-weight: 600;
+        color: var(--text-primary);
+        width: 120px;
+    }
+
+    .status-cell {
+        width: 100px;
+    }
+
+    .status-toggle {
+        padding: 0.4rem 0.8rem;
+        border-radius: 2rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: 1px solid var(--color-primary);
+        background: var(--color-primary-alpha);
+        color: var(--color-primary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        width: 70px;
         text-align: center;
+    }
+
+    .status-toggle.is-closed {
+        border-color: var(--text-secondary);
+        background: var(--background-third);
+        color: var(--text-secondary);
+    }
+
+    .status-toggle:hover {
+        transform: scale(1.05);
+    }
+
+    .time-cell {
+        width: 150px;
+    }
+
+    .time-cell :global(main) {
+        margin-bottom: 0 !important;
+    }
+
+    .closed-label {
+        color: var(--text-secondary);
+        font-style: italic;
+        font-size: 0.9rem;
     }
 
     .actions {
@@ -342,42 +440,63 @@
         justify-content: flex-end;
         gap: 1rem;
         margin-top: 1rem;
-        padding-top: 1rem;
+        padding-top: 2rem;
         border-top: 1px solid var(--border-color-light);
     }
 
-    button {
+    button.action-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
+        padding: 0.85rem 2rem;
         border: none;
         border-radius: var(--border-radius-md);
         font-family: var(--font-secondary);
-        font-weight: 500;
-        font-size: 0.95rem;
+        font-weight: 600;
+        font-size: 1rem;
         cursor: pointer;
-        transition: all var(--transition-normal);
+        transition: all 0.2s ease;
     }
 
-    button:first-of-type {
-        background: var(--color-primary-light);
-        color: var(--white);
+    .cancel-btn {
+        background: var(--background-secondary);
+        color: var(--text-secondary);
     }
 
-    button:last-of-type {
+    .cancel-btn:hover {
+        background: var(--background-third);
+        color: var(--text-primary);
+    }
+
+    .save-btn {
         background: var(--color-primary-dark);
         color: var(--white);
-        box-shadow: 0 4px 12px rgba(var(--shadow-color-rgb), 0.3);
+        box-shadow: 0 4px 12px rgba(var(--shadow-color-rgb), 0.2);
     }
 
-    button:last-of-type:disabled {
+    .save-btn:hover:not(:disabled) {
+        background: var(--color-primary);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(var(--shadow-color-rgb), 0.3);
+    }
+
+    .save-btn:disabled {
         opacity: 0.6;
         cursor: not-allowed;
     }
 
-    button:last-of-type:hover:not(:disabled) {
-        box-shadow: 0 6px 16px rgba(var(--shadow-color-rgb), 0.4);
+    @media (max-width: 768px) {
+        .grid-2 {
+            grid-template-columns: 1fr;
+        }
+
+        .hours-table-container {
+            overflow-x: auto;
+        }
+
+        .map-wrapper {
+            height: 400px;
+        }
     }
 </style>

@@ -21,15 +21,18 @@
     import { scale } from "svelte/transition";
     import { ArrowLeft } from "@lucide/svelte";
 
+    let loading = $state(true);
+
     $effect(() => {
         const checkAuth = async () => {
             await loadUser();
+            loading = false;
 
             user.subscribe((currentUser) => {
-                if (!currentUser) {
+                if (!loading && !currentUser) {
                     // User is not authenticated, redirect to login
                     window.location.href = "/accounts/login";
-                } else {
+                } else if (currentUser) {
                     // User is authenticated, store their ID
                     localStorage.setItem("userID", currentUser.id.toString());
                 }

@@ -21,7 +21,7 @@
         user: IUser;
     } = $props();
 
-    let cabinets: Cabinet[] = $state($cabinetsStore);
+    let cabinets: Cabinet[] = $derived($cabinetsStore);
     let search: string = $state("");
 
     onMount(async () => {
@@ -29,7 +29,6 @@
         if ($cabinetsStore.length === 0) {
             await loadAllCabinets();
         }
-        cabinets = $cabinetsStore;
 
         // Filter cabinets based on user type
         switch (user.type) {

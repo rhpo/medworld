@@ -1,7 +1,7 @@
 <script lang="ts">
     interface Props {
         category?: "textarea" | "input" | "select" | "display";
-        theme?: "primary" | "secondary" | "nothing";
+        theme?: "primary" | "secondary" | "symbollic" | "nothing";
         type?: string;
         label?: string;
         value?: any;
@@ -202,6 +202,7 @@
         font-family: var(--font-secondary);
         color: var(--text-color);
         transition: var(--transition);
+        outline: none;
     }
 
     .input.primary {
@@ -248,6 +249,14 @@
     }
 
     .input.nothing:focus {
+        outline: none;
+    }
+
+    .input.symbollic {
+        padding: 12px 16px;
+        font-size: 16px;
+        background: var(--background-secondary);
+        border: none !important;
         outline: none;
     }
 
