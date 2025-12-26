@@ -19,17 +19,17 @@ func SetupRoutes(app *fiber.App) {
 	consultationHandler := &handlers.ConsultationHandler{}
 	cabinetHandler := &handlers.CabinetHandler{}
 	allHandler := &handlers.AllHandler{}
+	calendarHandler := &handlers.CalendarHandler{}
+	messageHandler := &handlers.MessageHandler{}
 
-	// API v1 group
 	api := app.Group("/api/v1")
 
-	// Public routes - Authentication
 	auth := api.Group("/auth")
 	auth.Post("/login", authHandler.Login)
 	auth.Post("/register", authHandler.Register)
 	auth.Post("/logout", authHandler.Logout)
 
-	// Protected routes - require authentication
+	// Protected routes thatt require authentication
 	auth.Get("/me", middleware.AuthMiddleware, authHandler.Me)
 
 	// User routes
@@ -81,18 +81,50 @@ func SetupRoutes(app *fiber.App) {
 	// Cabinet routes
 	cabinets := api.Group("/cabinets", middleware.AuthMiddleware)
 	cabinets.Get("/", cabinetHandler.ListCabinets)
-	cabinets.Get("/:id", cabinetHandler.GetCabinetByID)
-	cabinets.Get("/:id/doctors", cabinetHandler.GetCabinetDoctors)
-	cabinets.Get("/:id/appointments", cabinetHandler.GetCabinetAppointments)
-	cabinets.Get("/:id/assistants", cabinetHandler.GetCabinetAssistants)
+	cabinets.Get("/:id", middleware.RequireCabinetAccess, cabinetHandler.GetCabinetByID)
+	cabinets.Get("/:id/doctors", middleware.RequireCabinetAccess, cabinetHandler.GetCabinetDoctors)
+	cabinets.Get("/:id/appointments", middleware.RequireCabinetAccess, cabinetHandler.GetCabinetAppointments)
+	cabinets.Get("/:id/assistants", middleware.RequireCabinetAccess, cabinetHandler.GetCabinetAssistants)
 	cabinets.Post("/",
 		middleware.RequirePermission(middleware.PermAddCabinet),
 		cabinetHandler.CreateCabinet)
+	cabinets.Put("/:id",
+		middleware.RequireCabinetAccess,
+		middleware.RequirePermission(middleware.PermEditCabinet),
+		cabinetHandler.UpdateCabinet)
+	cabinets.Delete("/:id",
+		middleware.RequireCabinetAccess,
+		middleware.RequirePermission(middleware.PermRemoveCabinet),
+		cabinetHandler.DeleteCabinet)
+	cabinets.Post("/:id/doctors",
+		middleware.RequireCabinetAccess,
+		middleware.RequirePermission(middleware.PermEditCabinet),
+		cabinetHandler.AddDoctorToCabinet)
+	cabinets.Delete("/:id/doctors/:doctorId",
+		middleware.RequireCabinetAccess,
+		middleware.RequirePermission(middleware.PermEditCabinet),
+		cabinetHandler.RemoveDoctorFromCabinet)
+	cabinets.Post("/:id/assistants",
+		middleware.RequireCabinetAccess,
+		middleware.RequirePermission(middleware.PermEditCabinet),
+		cabinetHandler.AddAssistantToCabinet)
+	cabinets.Post("/:id/assistants/create",
+		middleware.RequireCabinetAccess,
+		middleware.RequirePermission(middleware.PermAssignAssistant),
+		cabinetHandler.CreateAssistantInCabinet)
+	cabinets.Put("/:id/assistants/:assistantId/assign",
+		middleware.RequireCabinetAccess,
+		middleware.RequirePermission(middleware.PermAssignAssistant),
+		cabinetHandler.AssignAssistantToDoctor)
+	cabinets.Delete("/:id/assistants/:assistantId",
+		middleware.RequireCabinetAccess,
+		middleware.RequirePermission(middleware.PermEditCabinet),
+		cabinetHandler.RemoveAssistantFromCabinet)
 
 	// All routes (admin/superadmin only)
 	all := api.Group("/all",
 		middleware.AuthMiddleware,
-		middleware.RequireUserType(models.UserTypeSuperAdmin, models.UserTypeAdmin))
+		middleware.RequireUserType(models.UserTypeSuperAdmin))
 	all.Get("/appointments", allHandler.ListAllAppointments)
 	all.Get("/doctors", allHandler.ListAllDoctors)
 	all.Get("/patients", allHandler.ListAllPatients)
@@ -100,6 +132,26 @@ func SetupRoutes(app *fiber.App) {
 	all.Get("/cabinets", allHandler.ListAllCabinets)
 	all.Get("/users", allHandler.ListAllUsers)
 	all.Get("/consultations", allHandler.ListAllConsultations)
+
+	// Calendar routes
+	calendars := api.Group("/calendars", middleware.AuthMiddleware)
+	calendars.Get("/", calendarHandler.ListCalendars)
+	calendars.Get("/:id", calendarHandler.GetCalendarByID)
+	calendars.Put("/:id",
+		middleware.RequireAnyPermission(middleware.PermEditCalendar),
+		calendarHandler.UpdateCalendar)
+
+	// Message routes
+	messages := api.Group("/messages", middleware.AuthMiddleware)
+	messages.Get("/",
+		middleware.RequireAnyPermission(middleware.PermViewMessage),
+		messageHandler.ListMyMessages)
+	messages.Get("/recipients",
+		middleware.RequireAnyPermission(middleware.PermViewMessage),
+		messageHandler.ListRecipients)
+	messages.Post("/",
+		middleware.RequireAnyPermission(middleware.PermSendMessage),
+		messageHandler.CreateMessage)
 
 	// Health check
 	api.Get("/health", func(c *fiber.Ctx) error {

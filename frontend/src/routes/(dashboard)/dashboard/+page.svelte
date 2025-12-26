@@ -10,7 +10,12 @@
 
     import { currentBlock, currentCabinet, loadUser, user } from "$lib/stores";
 
-    import { Users, UserTypeNames, type UserType } from "$lib/types/users";
+    import {
+        Users,
+        UserTypeNames,
+        type IDoctor,
+        type UserType,
+    } from "$lib/types/users";
 
     import type { Admin } from "$lib/types/users/admin";
     import type { Doctor } from "$lib/types/users/doctor";
@@ -30,10 +35,10 @@
 
             user.subscribe((currentUser) => {
                 if (!loading && !currentUser) {
-                    // User is not authenticated, redirect to login
+                    // he is not authenticated thne redirect to login
                     window.location.href = "/accounts/login";
                 } else if (currentUser) {
-                    // User is authenticated, store their ID
+                    // he is authenticated so store their ID
                     localStorage.setItem("userID", currentUser.id.toString());
                 }
             });
@@ -44,7 +49,7 @@
 </script>
 
 {#if $user}
-    <View style="padding-top: 2rem;">
+    <View style="padding-top: 2rem;" screen>
         <button
             class="welcome"
             class:action={$currentCabinet !== null}
@@ -71,8 +76,15 @@
                             ? "Dr. "
                             : ""}
                         {$user.firstName}
+                        {$user.type === Users.Doctor ||
+                        $user.type === Users.Admin
+                            ? ($user as IDoctor).assistant?.fullName || ""
+                            : ""}
                         {$user.type === Users.Admin ? " (Admin)" : ""}
                         {$user.type === Users.SuperAdmin ? " (SuperAdmin)" : ""}
+                        {$user.type === Users.Assistant
+                            ? ` (Assistant of ${($user as Assistant).doctor?.fullName || ""})`
+                            : ""}
                     </h1>
 
                     {#if $currentCabinet}

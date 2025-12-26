@@ -8,9 +8,11 @@ import type { Speciality } from "../speciality";
 import type { Assistant } from "./assistant";
 
 export interface Doctor extends User<any> {
+    doctorId: number;
 
     // Speciality
     speciality: Speciality;
+    licenseNumber: string;
 
     // Dates
     dateOfBirth: Date;
@@ -29,10 +31,11 @@ export interface Doctor extends User<any> {
     consultations: Consultation[];
 
     // Cabinets
+    cabinetId: number;
     cabinet: Cabinet;
 
-    // Assistants
-    assistants: Assistant[];
+    // Assistant (exactly one in domain model)
+    assistant?: Assistant;
 
     // Price of consultations (per doctor)
     consultationPrice: number;

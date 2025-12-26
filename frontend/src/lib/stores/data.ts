@@ -85,7 +85,7 @@ export async function loadAllCabinets() {
     isLoadingCabinets.set(true);
     cabinetError.set(null);
     try {
-        const data = await AllAPI.listAllCabinets();
+        const data = await CabinetAPI.list();
         console.log("Cabinets:", data);
         cabinets.set(data);
     } catch (error: any) {
@@ -168,12 +168,9 @@ export async function loadAllConsultations() {
  * Load all essential data for the app
  */
 export async function loadAllData() {
-    await Promise.all([
-        loadAllDoctors(),
-        loadAllCabinets(),
-        loadAllAssistants(),
-        // Only load patients/appointments/consultations if user is authenticated and authorized
-    ]);
+    // We should not load everything globally anymore as it causes 403s for regular users.
+    // Components should load what they need based on their own permissions.
+    console.log("loadAllData: Skipping global load to avoid 403 errors. Components will load data as needed.");
 }
 
 // ==================== SEARCH FUNCTIONS ====================

@@ -8,6 +8,7 @@ export type BloodType = "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-"
 export const bloodTypes: BloodType[] = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 export interface Patient extends User<Users.Patient> {
+    patientId: number;
     emergencyContact: string;
     bloodType: BloodType;
     appointments: Appointment[];

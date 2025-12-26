@@ -13,8 +13,16 @@ type DoctorHandler struct{}
 
 // ListDoctors returns all doctors
 func (h *DoctorHandler) ListDoctors(c *fiber.Ctx) error {
+	currentUser := c.Locals("user").(*models.User)
+
 	var doctors []models.Doctor
 	query := database.DB.Preload("User").Preload("Cabinet")
+
+	if currentUser != nil && currentUser.Type != models.UserTypeSuperAdmin {
+		if cabinetID := getCurrentUserCabinetID(currentUser); cabinetID != 0 {
+			query = query.Where("cabinet_id = ?", cabinetID)
+		}
+	}
 
 	if err := query.Find(&doctors).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -38,6 +46,8 @@ func (h *DoctorHandler) ListDoctors(c *fiber.Ctx) error {
 
 // GetDoctorByID returns a doctor by ID
 func (h *DoctorHandler) GetDoctorByID(c *fiber.Ctx) error {
+	currentUser := c.Locals("user").(*models.User)
+
 	id, err := strconv.ParseUint(c.Params("id"), 10, 32)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -52,17 +62,45 @@ func (h *DoctorHandler) GetDoctorByID(c *fiber.Ctx) error {
 		})
 	}
 
+	// Sandbox: non-superadmin can only view doctors in their cabinet
+	if currentUser != nil && currentUser.Type != models.UserTypeSuperAdmin {
+		cabinetID := getCurrentUserCabinetID(currentUser)
+		if cabinetID == 0 || doctor.CabinetID != cabinetID {
+			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+				"message": "Forbidden (outside your cabinet)",
+			})
+		}
+	}
+
 	userData := getUserWithExtendedInfo(doctor.User)
 	return c.JSON(userData)
 }
 
 // GetDoctorAppointments returns appointments for a doctor
 func (h *DoctorHandler) GetDoctorAppointments(c *fiber.Ctx) error {
+	currentUser := c.Locals("user").(*models.User)
+
 	id, err := strconv.ParseUint(c.Params("id"), 10, 32)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid doctor ID",
 		})
+	}
+
+	// Sandbox: non-superadmin can only access doctor resources within their cabinet
+	if currentUser != nil && currentUser.Type != models.UserTypeSuperAdmin {
+		cabinetID := getCurrentUserCabinetID(currentUser)
+		var targetDoctor models.Doctor
+		if err := database.DB.First(&targetDoctor, id).Error; err != nil {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"message": "Doctor not found",
+			})
+		}
+		if cabinetID == 0 || targetDoctor.CabinetID != cabinetID {
+			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+				"message": "Forbidden (outside your cabinet)",
+			})
+		}
 	}
 
 	var appointments []models.Appointment
@@ -85,11 +123,29 @@ func (h *DoctorHandler) GetDoctorAppointments(c *fiber.Ctx) error {
 
 // GetDoctorConsultations returns consultations for a doctor
 func (h *DoctorHandler) GetDoctorConsultations(c *fiber.Ctx) error {
+	currentUser := c.Locals("user").(*models.User)
+
 	id, err := strconv.ParseUint(c.Params("id"), 10, 32)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid doctor ID",
 		})
+	}
+
+	// Sandbox: non-superadmin can only access doctor resources within their cabinet
+	if currentUser != nil && currentUser.Type != models.UserTypeSuperAdmin {
+		cabinetID := getCurrentUserCabinetID(currentUser)
+		var targetDoctor models.Doctor
+		if err := database.DB.First(&targetDoctor, id).Error; err != nil {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"message": "Doctor not found",
+			})
+		}
+		if cabinetID == 0 || targetDoctor.CabinetID != cabinetID {
+			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+				"message": "Forbidden (outside your cabinet)",
+			})
+		}
 	}
 
 	var consultations []models.Consultation
@@ -112,6 +168,8 @@ func (h *DoctorHandler) GetDoctorConsultations(c *fiber.Ctx) error {
 
 // GetDoctorPatients returns patients for a doctor
 func (h *DoctorHandler) GetDoctorPatients(c *fiber.Ctx) error {
+	currentUser := c.Locals("user").(*models.User)
+
 	id, err := strconv.ParseUint(c.Params("id"), 10, 32)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -119,14 +177,32 @@ func (h *DoctorHandler) GetDoctorPatients(c *fiber.Ctx) error {
 		})
 	}
 
+	// Sandbox: non-superadmin can only access doctor resources within their cabinet
+	if currentUser != nil && currentUser.Type != models.UserTypeSuperAdmin {
+		cabinetID := getCurrentUserCabinetID(currentUser)
+		var targetDoctor models.Doctor
+		if err := database.DB.First(&targetDoctor, id).Error; err != nil {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"message": "Doctor not found",
+			})
+		}
+		if cabinetID == 0 || targetDoctor.CabinetID != cabinetID {
+			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+				"message": "Forbidden (outside your cabinet)",
+			})
+		}
+	}
+
 	// Get unique patients from appointments
 	var appointments []models.Appointment
 	query := database.DB.Where("doctor_id = ?", id).Preload("Patient.User")
 
-	// Optional cabinet filter
-	cabinetID := c.Query("cabinet_id")
-	if cabinetID != "" {
-		query = query.Where("cabinet_id = ?", cabinetID)
+	// Optional cabinet filter: only allowed for SuperAdmin
+	if currentUser != nil && currentUser.Type == models.UserTypeSuperAdmin {
+		cabinetID := c.Query("cabinet_id")
+		if cabinetID != "" {
+			query = query.Where("cabinet_id = ?", cabinetID)
+		}
 	}
 
 	if err := query.Find(&appointments).Error; err != nil {
@@ -156,17 +232,28 @@ func (h *DoctorHandler) GetDoctorPatients(c *fiber.Ctx) error {
 
 // SearchDoctors searches doctors by filters
 func (h *DoctorHandler) SearchDoctors(c *fiber.Ctx) error {
+	currentUser := c.Locals("user").(*models.User)
+
 	query := database.DB.Model(&models.Doctor{}).
 		Preload("User").
 		Preload("Cabinet")
+
+	if currentUser != nil && currentUser.Type != models.UserTypeSuperAdmin {
+		if cabinetID := getCurrentUserCabinetID(currentUser); cabinetID != 0 {
+			query = query.Where("cabinet_id = ?", cabinetID)
+		}
+	}
 
 	// Apply filters
 	if speciality := c.Query("speciality"); speciality != "" {
 		query = query.Where("LOWER(speciality) LIKE ?", "%"+speciality+"%")
 	}
 
-	if cabinetID := c.Query("cabinet_id"); cabinetID != "" {
-		query = query.Where("cabinet_id = ?", cabinetID)
+	// cabinet_id filter: only allowed for SuperAdmin (others are already scoped)
+	if currentUser != nil && currentUser.Type == models.UserTypeSuperAdmin {
+		if cabinetID := c.Query("cabinet_id"); cabinetID != "" {
+			query = query.Where("cabinet_id = ?", cabinetID)
+		}
 	}
 
 	if priceMax := c.Query("price_max"); priceMax != "" {

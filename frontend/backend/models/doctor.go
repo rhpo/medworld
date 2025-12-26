@@ -10,11 +10,13 @@ type Doctor struct {
 	UserID               uint       `gorm:"uniqueIndex;not null" json:"userId"`
 	User                 *User      `gorm:"foreignKey:UserID" json:"user,omitempty"`
 	Speciality           string     `json:"speciality"`
+	LicenseNumber        string     `json:"licenseNumber"`
 	CareerStart          *time.Time `json:"careerStart"`
 	ConsultationPrice    float64    `json:"consultationPrice"`
 	ConsultationDuration int        `json:"consultationDuration"` // in minutes
 	CabinetID            uint       `gorm:"index" json:"cabinetId"`
 	Cabinet              *Cabinet   `gorm:"foreignKey:CabinetID" json:"cabinet,omitempty"`
+	Calendars            []Calendar `gorm:"foreignKey:DoctorID" json:"calendars,omitempty"`
 	CreatedAt            time.Time  `json:"createdAt"`
 	UpdatedAt            time.Time  `json:"updatedAt"`
 }

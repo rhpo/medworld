@@ -40,7 +40,7 @@
             if (!searchQuery) return true;
             const searchTerm = searchQuery.toLowerCase();
             return (
-                patient.getFullName().toLowerCase().includes(searchTerm) ||
+                patient.fullName.toLowerCase().includes(searchTerm) ||
                 patient.email.toLowerCase().includes(searchTerm) ||
                 (patient.phoneNumber &&
                     patient.phoneNumber.includes(searchTerm))
@@ -81,10 +81,10 @@
                             <Avatar
                                 size="48px"
                                 avatarUrl={patient.avatarUrl}
-                                alt={patient.getFullName()}
+                                alt={patient.fullName}
                             />
                         </td>
-                        <td>{patient.getFullName()}</td>
+                        <td>{patient.fullName}</td>
                         <td>{patient.email}</td>
                         <td>{patient.phoneNumber || "N/A"}</td>
                         <td>

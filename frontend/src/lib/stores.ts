@@ -68,7 +68,6 @@ export function blockBack() {
 }
 
 export function gotoBlock(block: Group) {
-    // I was gonna implement it so if it finds a block ID already in the stack it just pops the rest, but im gonna use the append logic...
     currentBlock.update(e => [...e, block]);
     currentLevel.update(c => ++c);
 }

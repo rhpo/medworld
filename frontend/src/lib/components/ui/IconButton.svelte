@@ -13,6 +13,7 @@
         Icon?: any;
         color?: string;
         onClick?: () => void;
+        onclick?: () => void;
         disabled?: boolean;
         children?: Snippet;
     }
@@ -25,7 +26,8 @@
         target = "_self",
         Icon,
         color = "",
-        onClick = () => {},
+        onClick,
+        onclick,
         disabled = false,
         children,
         ...rest
@@ -63,7 +65,7 @@
         aria-label="Panier"
         use:tippy={tooltipProps}
         class:auto-width={autoWidth}
-        onclick={onClick}
+        onclick={onclick || onClick}
         class:primary={type === "primary"}
         class:secondary={type === "secondary"}
         class:error={type === "error"}

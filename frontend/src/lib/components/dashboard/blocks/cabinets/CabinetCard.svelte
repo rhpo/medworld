@@ -22,11 +22,26 @@
         ];
         return days[new Date().getDay()];
     }
+
+    function shorten(address: string): string {
+        function innerShorten(address: string): string {
+            return address.length > 50 ? address.slice(0, 50) + "..." : address;
+        }
+
+        // if the address contains commas, return the last 3 comma-separated strings
+        if (address.includes(",")) {
+            return innerShorten(address.split(",").slice(-5).join(", "));
+        }
+        return innerShorten(address);
+    }
 </script>
 
 <button class="cabinet-card">
     <div class="cabinet-image">
-        <img src={cabinet.image} alt={cabinet.name} />
+        <img
+            src={cabinet.image || "placeholder-cabinet.jpg"}
+            alt={cabinet.name}
+        />
         <div class="stickers">
             {#if cabinet.accessHandicap}
                 <div
@@ -83,22 +98,19 @@
 
     <div class="cabinet-info">
         <h3>{cabinet.name}</h3>
-        <p class="address">📍 {cabinet.location.address}</p>
-        <p class="phone">📞 {cabinet.phone}</p>
+        <p class="address">
+            📍 {shorten(cabinet.location?.address) || "No address"}
+        </p>
+        <p class="phone">📞 {cabinet.phone || "No phone"}</p>
         <p>
             🚗 Distance {calculateDistance(cabinet, $userLocation).toFixed(0)} KM
         </p>
         <p class="rating">
             ⭐ {calculateRatingScore(cabinet).toFixed(1)} / 5
         </p>
-
-        <p>
-            {isCabinetOpen(cabinet) ? "Is Open" : "Is Closed"}
-        </p>
-
-        <div class="hours-preview">
+        <p class="hours-preview">
             <span>🕒 Today: </span>
-            {#if cabinet.openingHours[getDayOfWeek().toLowerCase()]}
+            {#if cabinet.openingHours?.[getDayOfWeek().toLowerCase()]}
                 <span
                     >{cabinet.openingHours[getDayOfWeek().toLowerCase()].open} -
                     {cabinet.openingHours[getDayOfWeek().toLowerCase()]
@@ -107,7 +119,7 @@
             {:else}
                 <span class="closed">Closed</span>
             {/if}
-        </div>
+        </p>
     </div>
 </button>
 
@@ -175,6 +187,7 @@
     }
 
     .cabinet-info p {
+        text-align: left;
         font-size: 0.875rem;
         color: #666;
         display: flex;
@@ -186,10 +199,6 @@
         color: #666;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        margin-top: 0.5rem;
-        padding-top: 0.5rem;
-        border-top: 1px solid #f0f0f0;
     }
 
     .hours-preview .closed {

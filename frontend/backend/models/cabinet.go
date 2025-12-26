@@ -14,7 +14,7 @@ type Cabinet struct {
 	Admin            *User     `gorm:"foreignKey:AdminID" json:"admin,omitempty"`
 	Location         string    `gorm:"type:text" json:"location"`     // JSON: {address, latitude, longitude}
 	OpeningHours     string    `gorm:"type:text" json:"openingHours"` // JSON: {day: {open, close}}
-	AccessHandicap   bool      `json:"accessHandicap"`
+	AccessHandicap   *bool     `json:"accessHandicap"`
 	HasParking       *bool     `json:"hasParking,omitempty"`
 	HasWifi          *bool     `json:"hasWifi,omitempty"`
 	AcceptsUrgent    *bool     `json:"acceptsUrgent,omitempty"`

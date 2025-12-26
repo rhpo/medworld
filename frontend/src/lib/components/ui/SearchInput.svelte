@@ -2,6 +2,7 @@
     import { Search } from "@lucide/svelte";
     import Input from "$lib/components/ui/Input.svelte";
     import type { HTMLAttributes } from "svelte/elements";
+    import { onMount } from "svelte";
 
     interface IProps extends HTMLAttributes<HTMLElement> {
         placeholder?: string;
@@ -17,26 +18,20 @@
         searchInput = $bindable(),
         ...rest
     }: IProps = $props();
+
+    let focused = $state(false);
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<main onclick={() => searchInput?.focus()} {...rest}>
+<main onclick={() => searchInput?.focus()} class:focused {...rest}>
     <Input
         type="text"
         {placeholder}
         bind:this={searchInput}
+        bind:focused
         bind:value
-        theme="nothing"
-        onInput={(e: any) => {
-            // Input component handles binding, we just need to handle enter key if needed
-            // But Input doesn't emit keydown events directly, we might need to add onkeydown to Input or wrap it
-        }}
-        onkeydown={(e: KeyboardEvent) => {
-            if (e.key === "Enter") {
-                onSearch(value);
-            }
-        }}
+        theme="symbollic"
     />
 
     <button onclick={() => onSearch(value)}>
@@ -78,7 +73,8 @@
         outline: none;
     }
 
-    main:hover {
+    main:focus-within,
+    main.focused {
         border: 3px solid var(--color-primary);
     }
 

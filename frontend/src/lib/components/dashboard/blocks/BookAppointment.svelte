@@ -74,7 +74,7 @@
 
                 const matchesSearch =
                     doctor
-                        .getFullName()
+                        .fullName
                         .toLowerCase()
                         .includes(searchTerm.toLowerCase()) ||
                     doctor.speciality
@@ -253,7 +253,7 @@
                                     onclick={() => (selectedDoctor = doctor)}
                                 >
                                     <div class="card-header">
-                                        <h3>{doctor.getFullName()}</h3>
+                                        <h3>{doctor.fullName}</h3>
                                         <span class="specialty"
                                             >{doctor.speciality}</span
                                         >
@@ -281,7 +281,7 @@
                         <br />
                     {:else}
                         <h3>
-                            Selected Doctor: {selectedDoctor?.getFullName()}
+                            Selected Doctor: {selectedDoctor?.fullName}
                         </h3>
 
                         <br />
@@ -306,7 +306,7 @@
                                     onclick={() => (selectedDoctor = doctor)}
                                 >
                                     <div class="card-header">
-                                        <h3>{doctor.getFullName()}</h3>
+                                        <h3>{doctor.fullName}</h3>
                                         <span class="specialty"
                                             >{doctor.speciality}</span
                                         >
@@ -365,7 +365,7 @@
                             <User size={20} />
                             <div>
                                 <h4>Doctor</h4>
-                                <p>{selectedDoctor?.getFullName()}</p>
+                                <p>{selectedDoctor?.fullName}</p>
                                 <span class="specialty"
                                     >{selectedDoctor?.speciality}</span
                                 >

@@ -18,6 +18,8 @@ func RunMigrations() error {
 		&models.Assistant{},
 		&models.Appointment{},
 		&models.Consultation{},
+		&models.Message{},
+		&models.Calendar{},
 	)
 
 	if err != nil {

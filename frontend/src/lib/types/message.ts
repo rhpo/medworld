@@ -11,12 +11,10 @@ export type MessageContent = {
 
 export type Message = {
     id:                 number;
-    sender:             Doctor | Admin;
-    cabinet:            Cabinet;
-    receiver:           Doctor | Admin;
-    date:               Date;
-    content:            MessageContent;
-
-    status:             'seen' | 'unseen'
+    sender:             User<any>;
+    receiver:           User<any>;
+    createdAt:          Date;
+    content:            string;
+    isRead:             boolean;
 }
 

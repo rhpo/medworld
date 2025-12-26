@@ -6,7 +6,8 @@ export interface Assistant extends User<Users.Assistant> {
     cabinet: Cabinet;
     appointments: Appointment[];
 
-    doctors: IDoctor[]; // DoctorA (Cabinet A) && Doctor B (Cabinet B) is possible? no
+    doctorId: number;
+    doctor: IDoctor;
     planAppointment(): void;
     cancelAppointment(): void;
     recordPayment(patientId: number, amount: number): void;

@@ -7,7 +7,7 @@
     import { getPermissionsFromUserType } from "$lib/types/permission";
 
     import type { Admin } from "$lib/types/users/admin";
-    import type { Cabinet, CabinetFillable } from "$lib/types/cabinet";
+    import type { Cabinet, Location } from "$lib/types/cabinet";
     import type { SuperAdmin } from "$lib/types/users/superadmin";
 
     import {
@@ -20,19 +20,26 @@
         AlertTriangle,
         CreditCard,
         Accessibility,
+        Plus,
+        X,
+        MapPin,
     } from "@lucide/svelte";
+    import MapSelector from "./MapSelector.svelte";
 
     import { extract, validate, validation } from "$lib/validation";
-
+    import { CabinetAPI } from "$lib/api";
+    import { cabinets } from "$lib/stores/data";
+    import { get } from "svelte/store";
     import type { Fillable } from "$lib/validation";
 
     interface IProps {
         user: SuperAdmin | Admin;
         cabinet: Cabinet;
+        onBack?: () => void;
         [key: string]: any;
     }
 
-    let { user, cabinet, ...rest }: IProps = $props();
+    let { user, cabinet, onBack, ...rest }: IProps = $props();
     let permissions = getPermissionsFromUserType(user.type);
 
     let activeTab = $state("general");
@@ -49,20 +56,14 @@
         sunday: { open: "Closed", close: "Closed" },
     };
 
-    const mergedHours = {
-        ...defaultHours,
-        ...JSON.parse(JSON.stringify(cabinet.openingHours || {})),
-    };
-
     const initializeOpeningHours = () => {
-        const hours: Record<
-            string,
-            {
-                value: { open: string; close: string };
-                error: string;
-                validator: (value: string) => string;
-            }
-        > = {};
+        const hours: Record<string, any> = {};
+        let cabinetHours =
+            typeof cabinet.openingHours === "string"
+                ? JSON.parse(cabinet.openingHours)
+                : cabinet.openingHours || {};
+
+        if (!cabinetHours) cabinetHours = {};
 
         [
             "monday",
@@ -73,10 +74,15 @@
             "saturday",
             "sunday",
         ].forEach((day) => {
+            // Check for both capitalized and lowercase keys
+            const dayKey = day.charAt(0).toUpperCase() + day.slice(1);
+            const value =
+                cabinetHours[dayKey] || cabinetHours[day] || defaultHours[day];
+
             hours[day] = {
-                value: mergedHours[day] || { open: "09:00", close: "17:00" },
+                value: { ...value },
                 error: "",
-                validator: validation.nothing,
+                validator: (v: any) => "",
             };
         });
 
@@ -85,47 +91,82 @@
 
     let data: Fillable = $state({
         name: {
-            value: "",
+            value: cabinet.name || "",
             error: "",
             validator: validation.name,
         },
         phone: {
-            value: cabinet.phone,
+            value: cabinet.phone || "",
             error: "",
             validator: validation.phoneNumber,
         },
+        image: {
+            value: cabinet.image || "",
+            error: "",
+            validator: validation.nothing,
+        },
         location: {
-            value: { ...cabinet.location },
+            value: (() => {
+                const loc =
+                    typeof cabinet.location === "string"
+                        ? JSON.parse(cabinet.location)
+                        : { ...cabinet.location };
+                return loc || { address: "", latitude: 0, longitude: 0 };
+            })(),
             error: "",
             validator: validation.nothing,
         },
         accessHandicap: {
-            value: cabinet.accessHandicap,
+            value: !!cabinet.accessHandicap,
             error: "",
             validator: validation.nothing,
         },
         hasParking: {
-            value: cabinet.hasParking,
+            value: !!cabinet.hasParking,
             error: "",
             validator: validation.nothing,
         },
         hasWifi: {
-            value: cabinet.hasWifi,
+            value: !!cabinet.hasWifi,
             error: "",
             validator: validation.nothing,
         },
         acceptsUrgent: {
-            value: cabinet.acceptsUrgent,
+            value: !!cabinet.acceptsUrgent,
             error: "",
             validator: validation.nothing,
         },
         acceptsInsurance: {
-            value: cabinet.acceptsInsurance,
+            value: !!cabinet.acceptsInsurance,
             error: "",
             validator: validation.nothing,
         },
         openingHours: initializeOpeningHours(),
     });
+
+    function handleLocationChange(location: Location) {
+        data.location.value = {
+            address: location.address || data.location.value.address,
+            latitude: location.latitude,
+            longitude: location.longitude,
+        };
+    }
+
+    function handleFileChange(e: Event) {
+        const target = e.target as HTMLInputElement;
+        const file = target.files?.[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert("Image size should be less than 5MB");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+                data.image.value = reader.result as string;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
 
     function isValidTime(time: string) {
         return /^([0-1]\d|2[0-3]):([0-5]\d)$/.test(time);
@@ -147,6 +188,10 @@
         return true;
     }
 
+    function cancel() {
+        onBack?.();
+    }
+
     async function handleSave() {
         let error = validate(data);
         if (error) return alert(error);
@@ -156,8 +201,20 @@
         isSaving = true;
         try {
             let readyData = extract(data);
-            // do something with readyData
+            await CabinetAPI.update(cabinet.id, readyData as any);
+
+            // Reactive update of the stores
+            cabinets.update((all) =>
+                all.map((c) =>
+                    c.id === cabinet.id
+                        ? ({ ...c, ...readyData } as Cabinet)
+                        : c,
+                ),
+            );
+
+            alert("Cabinet updated successfully!");
         } catch (error) {
+            console.error(error);
             alert("Error saving changes");
         } finally {
             isSaving = false;
@@ -173,9 +230,14 @@
         }
 
         try {
+            await CabinetAPI.delete(cabinet.id);
             alert("Cabinet deleted successfully!");
+            if (onBack) onBack();
         } catch (error) {
+            console.error(error);
             alert("Error deleting cabinet");
+        } finally {
+            showDeleteConfirm = false;
         }
     }
 </script>
@@ -218,6 +280,39 @@
             {#if activeTab === "general"}
                 <div class="form-section" transition:fade>
                     <h3>Basic Information</h3>
+
+                    <div class="image-management">
+                        <label class="image-label" for="cabinet-image-input"
+                            >Cabinet Picture</label
+                        >
+                        <div class="image-preview-wrapper">
+                            {#if data.image.value}
+                                <img
+                                    src={data.image.value}
+                                    alt="Cabinet"
+                                    class="image-preview"
+                                />
+                                <button
+                                    class="remove-image"
+                                    onclick={() => (data.image.value = "")}
+                                    >&times;</button
+                                >
+                            {:else}
+                                <div class="image-placeholder">
+                                    <Plus size={32} />
+                                    <span>Upload picture</span>
+                                </div>
+                            {/if}
+                            <input
+                                id="cabinet-image-input"
+                                type="file"
+                                accept="image/*"
+                                class="image-input"
+                                onchange={handleFileChange}
+                            />
+                        </div>
+                    </div>
+
                     <Input
                         placeholder="Cabinet name..."
                         label="Name"
@@ -237,16 +332,18 @@
                         type="tel"
                         required
                     />
-                    <h4>Location</h4>
-                    <Input
-                        placeholder="Address..."
-                        label="Address"
-                        showLabel
-                        bind:value={data.location.value.address}
-                        bind:error={data.location.error}
-                        validation={data.location.validator}
-                        required
-                    />
+                    <div class="location-management">
+                        <div class="section-header">
+                            <MapPin size={20} />
+                            <h3>Cabinet Location</h3>
+                        </div>
+                        <div class="map-wrapper-outline">
+                            <MapSelector
+                                location={data.location.value}
+                                onChange={handleLocationChange}
+                            />
+                        </div>
+                    </div>
                 </div>
             {:else if activeTab === "features"}
                 <div class="form-section" transition:fade>
@@ -289,7 +386,7 @@
                                 type="checkbox"
                                 bind:checked={data.hasWifi.value}
                             />
-                            {#if data.hasWifi}
+                            {#if data.hasWifi.value}
                                 <Wifi size={20} />
                             {:else}
                                 <WifiOff size={20} />
@@ -305,7 +402,47 @@
                         {#each ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] as day}
                             <div class="day-schedule">
                                 <h4>{day}</h4>
-                                <div class="time-inputs">
+                                <div class="schedule-header-actions">
+                                    <button
+                                        type="button"
+                                        class="status-toggle"
+                                        class:is-closed={data.openingHours[
+                                            day.toLowerCase()
+                                        ].value.open === "Closed"}
+                                        onclick={() => {
+                                            const dayKey = day.toLowerCase();
+                                            if (
+                                                data.openingHours[dayKey].value
+                                                    .open === "Closed"
+                                            ) {
+                                                data.openingHours[
+                                                    dayKey
+                                                ].value.open = "09:00";
+                                                data.openingHours[
+                                                    dayKey
+                                                ].value.close = "17:00";
+                                            } else {
+                                                data.openingHours[
+                                                    dayKey
+                                                ].value.open = "Closed";
+                                                data.openingHours[
+                                                    dayKey
+                                                ].value.close = "Closed";
+                                            }
+                                        }}
+                                    >
+                                        {data.openingHours[day.toLowerCase()]
+                                            .value.open === "Closed"
+                                            ? "Closed"
+                                            : "Open"}
+                                    </button>
+                                </div>
+                                <div
+                                    class="time-inputs"
+                                    class:content-hidden={data.openingHours[
+                                        day.toLowerCase()
+                                    ].value.open === "Closed"}
+                                >
                                     <Input
                                         type="time"
                                         label="Opens"
@@ -359,6 +496,11 @@
                                         }}
                                     />
                                 </div>
+                                {#if data.openingHours[day.toLowerCase()].value.open === "Closed"}
+                                    <p class="closed-info">
+                                        This cabinet is closed on {day}
+                                    </p>
+                                {/if}
                             </div>
                         {/each}
                     </div>
@@ -367,6 +509,14 @@
         </div>
 
         <div class="actions">
+            <Button
+                category="secondary"
+                Icon={X}
+                label={"Back"}
+                disabled={isSaving}
+                onclick={cancel}
+            />
+
             {#if permissions.includes("remove_cabinet")}
                 <Button
                     category="error"
@@ -440,6 +590,93 @@
         color: var(--text-muted);
     }
 
+    .image-management {
+        margin-bottom: 1.5rem;
+    }
+
+    .image-label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .location-management {
+        margin-top: 1rem;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border-color-light);
+        color: var(--color-primary-dark);
+        margin-bottom: 1rem;
+    }
+
+    .map-wrapper-outline {
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .image-preview-wrapper {
+        position: relative;
+        width: 200px;
+        height: 150px;
+        border: 2px dashed var(--border-color);
+        border-radius: 0.75rem;
+        overflow: hidden;
+        background: var(--background-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .image-preview {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .image-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-muted);
+    }
+
+    .image-input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .remove-image {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba(239, 68, 68, 0.9);
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
     .features-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -483,14 +720,53 @@
     }
 
     .day-schedule h4 {
-        margin: 0 0 1rem;
+        margin: 0;
         color: var(--text-color);
+    }
+
+    .schedule-header-actions {
+        margin: 0.5rem 0 1rem;
+    }
+
+    .status-toggle {
+        padding: 0.4rem 0.8rem;
+        border-radius: 2rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: 1px solid var(--color-primary);
+        background: var(--color-primary-alpha);
+        color: var(--color-primary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        width: 100%;
+        text-align: center;
+    }
+
+    .status-toggle.is-closed {
+        border-color: var(--text-muted);
+        background: var(--background-hover);
+        color: var(--text-muted);
+    }
+
+    .status-toggle:hover {
+        transform: scale(1.02);
     }
 
     .time-inputs {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 1rem;
+    }
+
+    .time-inputs.content-hidden {
+        display: none;
+    }
+
+    .closed-info {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        font-style: italic;
+        margin: 0.5rem 0 0;
     }
 
     .empty-state {

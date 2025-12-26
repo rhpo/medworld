@@ -26,7 +26,7 @@
 </script>
 
 <Dashboard>
-    {#if permissionGroups.includes("patients")}
+    {#if permissionGroups.includes("appointments")}
         <ManageAppointments
             user={doctor}
             cabinet={$currentCabinet as Cabinet}

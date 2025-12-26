@@ -23,6 +23,9 @@ importers:
       svelte-meta-tags:
         specifier: ^4.5.0
         version: 4.5.0(svelte@5.39.12)
+      svelte-portal:
+        specifier: ^2.2.1
+        version: 2.2.1
       sveltejs-tippy:
         specifier: ^3.0.0
         version: 3.0.0
@@ -681,6 +684,9 @@ packages:
     peerDependencies:
       svelte: ^5.0.0
 
+  svelte-portal@2.2.1:
+    resolution: {integrity: sha512-uF7is5sM4aq5iN7QF/67XLnTUvQCf2iiG/B1BHTqLwYVY1dsVmTeXZ/LeEyU6dLjApOQdbEG9lkqHzxiQtOLEQ==}
+
   svelte@5.39.12:
     resolution: {integrity: sha512-CEzwxFuEycokU8K8CE/OuwVbmei+ivu2HvBGYIdASfMa1hCRSNr4RRkzNSvbAvu6h+BOig2CsZTAEY+WKvwZpA==}
     engines: {node: '>=18'}
@@ -1306,6 +1312,8 @@ snapshots:
     dependencies:
       schema-dts: 1.1.5
       svelte: 5.39.12
+
+  svelte-portal@2.2.1: {}
 
   svelte@5.39.12:
     dependencies:

@@ -25,24 +25,32 @@
     let { user, cabinet }: IProps = $props();
 
     onMount(async () => {
-        patients = await DoctorAPI.getPatients(user.id);
+        console.log("ManagePatients: Mounting for user:", user);
+        if ((user as any).doctorId) {
+            console.log(
+                "ManagePatients: Fetching patients for doctorId:",
+                (user as any).doctorId,
+            );
+            // Fetch only patients for this doctor and cabinet (if specified)
+            patients = await DoctorAPI.getPatients(
+                (user as any).doctorId,
+                cabinet?.id,
+            );
+            console.log("ManagePatients: Received patients:", patients);
+        } else {
+            console.error("ManagePatients: No doctorId found in user object.");
+        }
     });
 
     let filteredPatients = $derived(
         patients.filter((patient) => {
-            if (cabinet !== undefined) {
-                const patientAppointments: Appointment[] =
-                    patient.appointments || [];
-                const hasAppointmentInCabinet = patientAppointments.some(
-                    (apt: Appointment) => apt.cabinet.id === cabinet.id,
-                );
-                if (!hasAppointmentInCabinet) return false;
-            }
+            // Remove the local cabinet filter because the API already handles it
+            // and we don't have the appointment data here to check locally.
 
             if (!searchQuery) return true;
             const searchTerm = searchQuery.toLowerCase();
             return (
-                patient.getFullName().toLowerCase().includes(searchTerm) ||
+                patient.fullName.toLowerCase().includes(searchTerm) ||
                 patient.email.toLowerCase().includes(searchTerm) ||
                 (patient.phoneNumber &&
                     patient.phoneNumber.includes(searchTerm))
@@ -64,7 +72,7 @@
     </div>
 
     {#if filteredPatients.length === 0}
-        <h3>No patients found!!</h3>
+        <h3>No patients found</h3>
     {:else}
         <table>
             <thead>
@@ -83,10 +91,10 @@
                             <Avatar
                                 size="48px"
                                 avatarUrl={patient.avatarUrl}
-                                alt={patient.getFullName()}
+                                alt={patient.fullName}
                             />
                         </td>
-                        <td>{patient.getFullName()}</td>
+                        <td>{patient.fullName}</td>
                         <td>{patient.email}</td>
                         <td>{patient.phoneNumber || "N/A"}</td>
                         <td class="actions">

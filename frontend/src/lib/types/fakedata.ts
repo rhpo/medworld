@@ -23,6 +23,7 @@ function createDoctor(
 ): Doctor {
     return {
         id,
+        doctorId: id,
         firstName,
         lastName,
         email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@medworld.dz`,
@@ -34,22 +35,23 @@ function createDoctor(
         avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${id}`,
 
         speciality,
+        licenseNumber: `LIC-${id}`,
         careerStart: new Date(2010 + Math.floor(Math.random() * 10), 0, 1),
+        cabinetId: cabinet.id,
         cabinet,
         consultationPrice,
         consultationDuration: 30,
 
+        calendars: [],
+
         messages: [],
         reviews: [],
-        calendars: [],
         consultations: [],
-        assistants: [],
+        assistant: undefined,
 
         createdAt: new Date(),
 
-        getFullName(): string {
-            return `${this.firstName} ${this.lastName}`;
-        },
+        fullName: `${firstName} ${lastName}`,
 
         getYearsOfExperience(): number {
             return new Date().getFullYear() - this.careerStart.getFullYear();
@@ -60,6 +62,7 @@ function createDoctor(
 function createPatient(id: number, firstName: string, lastName: string): Patient {
     return {
         id,
+        patientId: id,
         firstName,
         lastName,
         email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@patient.com`,
@@ -82,9 +85,7 @@ function createPatient(id: number, firstName: string, lastName: string): Patient
 
         createdAt: new Date(),
 
-        getFullName(): string {
-            return `${this.firstName} ${this.lastName}`;
-        },
+        fullName: `${firstName} ${lastName}`,
 
         addReview(): void { },
     };
@@ -105,13 +106,12 @@ function createAssistant(id: number, firstName: string, lastName: string, cabine
 
         cabinet,
         appointments: [],
-        doctors: [],
+        doctorId: 0,
+        doctor: {} as any,
 
         createdAt: new Date(),
 
-        getFullName(): string {
-            return `${this.firstName} ${this.lastName}`;
-        },
+        fullName: `${firstName} ${lastName}`,
 
         planAppointment(): void { },
         cancelAppointment(): void { },
@@ -444,9 +444,7 @@ export const fakeSuperAdmin: SuperAdmin = {
 
     createdCabinets: fakeCabinets,
 
-    getFullName(): string {
-        return `${this.firstName} ${this.lastName}`;
-    },
+    fullName: `Houria Aichi`,
 
     createCabinet(): void { },
     deleteCabinet(): void { },

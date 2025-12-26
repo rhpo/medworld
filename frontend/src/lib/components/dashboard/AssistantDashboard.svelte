@@ -7,8 +7,10 @@
     import ManageAppointments from "./blocks/ManageAppointments.svelte";
     import ManageConsultations from "./blocks/ManageConsultations.svelte";
 
+    import type { Doctor } from "$lib/types/users/doctor";
     import type { Cabinet } from "$lib/types/cabinet";
     import type { Assistant } from "$lib/types/users/assistant";
+    import type { Consultation } from "$lib/types/consultation";
 
     interface IProps {
         assistant: Assistant;
@@ -16,6 +18,7 @@
 
     let { assistant }: IProps = $props();
     let permissions = getPermissionsFromUserType(assistant.type);
+    let doctor = $derived((assistant as any)?.doctor);
 </script>
 
 <!-- I removed cabvinet selector logic cuz assistant has one cabinet (romy told me) -->
@@ -36,9 +39,9 @@
     {#if permissions.find((e) => e.endsWith("_consultation"))}
         <ManageConsultations
             user={assistant}
-            patients={assistant.doctors
-                .map((d) => d.consultations.map((e) => e.patient))
-                .flat()}
+            patients={(doctor?.consultations || []).map(
+                (c: Consultation) => c.patient,
+            )}
         />
     {/if}
 

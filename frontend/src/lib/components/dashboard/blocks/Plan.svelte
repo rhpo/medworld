@@ -1,12 +1,14 @@
 <script lang="ts">
+    import type { Admin } from "$lib/types/users/admin";
+
     import Block from "$lib/components/ui/Block.svelte";
     import Button from "$lib/components/ui/Button.svelte";
+
     import { user } from "$lib/stores";
     import { PlanID } from "$lib/types/plan";
-    import type { Admin } from "$lib/types/users/admin";
     import { Check, Crown } from "@lucide/svelte";
 
-    let currentPlanId: PlanID | null = ($user as Admin).plan.planID;
+    let currentPlanId: PlanID | null = ($user as Admin).plan?.planID || null;
 
     type PlanCard = {
         id: string;

@@ -117,6 +117,11 @@
             error: "",
             validator: (v: string) => "", // Optional field
         },
+        weight: {
+            value: "",
+            error: "",
+            validator: validation.number, // Optional but must be number if provided
+        },
     });
 
     onMount(async () => {
@@ -138,20 +143,49 @@
                 .split("T")[0];
             formData.gender.value = user.gender || "";
             formData.address.value = user.address || "";
-            formData.medicalHistory.value =
-                (user as Patient).medicalHistory || [];
+            try {
+                const history = (user as Patient).medicalHistory;
+                formData.medicalHistory.value =
+                    typeof history === "string"
+                        ? JSON.parse(history || "[]")
+                        : history || [];
+            } catch (e) {
+                console.error("Failed to parse medical history", e);
+                formData.medicalHistory.value = [];
+            }
 
             if (user.type === Users.Doctor) {
                 const doctor = user as Doctor;
                 formData.speciality.value = doctor.speciality || "";
-                formData.yearsOfExperience.value =
-                    doctor.getYearsOfExperience()?.toString() || "";
+                formData.licenseNumber.value = doctor.licenseNumber || "";
+                formData.consultationPrice.value =
+                    doctor.consultationPrice?.toString() || "";
+                formData.consultationDuration.value =
+                    doctor.consultationDuration?.toString() || "";
+
+                if (doctor.careerStart) {
+                    const start = new Date(doctor.careerStart);
+                    const diff = new Date().getFullYear() - start.getFullYear();
+                    formData.yearsOfExperience.value = diff.toString();
+                } else {
+                    formData.yearsOfExperience.value = "0";
+                }
             } else if (user.type === Users.Patient) {
                 const patient = user as Patient;
                 formData.bloodType.value = patient.bloodType || "";
-                formData.allergies.value = patient.allergies || [];
+                try {
+                    const allergies = patient.allergies;
+                    formData.allergies.value =
+                        typeof allergies === "string"
+                            ? JSON.parse(allergies || "[]")
+                            : allergies || [];
+                } catch (e) {
+                    console.error("Failed to parse allergies", e);
+                    formData.allergies.value = [];
+                }
                 formData.emergencyContact.value =
                     patient.emergencyContact || "";
+                formData.weight.value = patient.weight?.toString() || "";
             }
 
             isLoading = false;
@@ -184,20 +218,13 @@
     async function handleSubmit() {
         if (edit) {
             try {
-                // Validate required fields before submission
-                validateField("firstName");
-                validateField("lastName");
-                validateField("email");
-                validateField("phoneNumber");
+                // Validate all fields using the centralized validation helper
+                const validationError = validate(formData);
 
-                // Check if any field has error
-                const hasErrors = Object.keys(formData).some(
-                    (key) =>
-                        formData[key as keyof typeof formData].error !== "",
-                );
-
-                if (hasErrors) {
-                    errorMessage = "Please correct the errors in the form.";
+                if (validationError) {
+                    errorMessage =
+                        validationError ||
+                        "Please correct the errors in the form.";
                     return;
                 }
 
@@ -218,13 +245,23 @@
 
                 if (user?.type === Users.Doctor) {
                     updateData.speciality = cleanData.speciality;
+                    updateData.licenseNumber = cleanData.licenseNumber;
+                    updateData.consultationPrice =
+                        parseFloat(cleanData.consultationPrice) || 0;
+                    updateData.consultationDuration =
+                        parseInt(cleanData.consultationDuration) || 0;
                     updateData.yearsOfExperience =
                         parseInt(cleanData.yearsOfExperience) || 0;
                 } else if (user?.type === Users.Patient) {
                     updateData.bloodType = cleanData.bloodType;
-                    updateData.allergies = cleanData.allergies;
+                    updateData.allergies = JSON.stringify(
+                        cleanData.allergies || [],
+                    );
                     updateData.emergencyContact = cleanData.emergencyContact;
-                    updateData.medicalHistory = cleanData.medicalHistory;
+                    updateData.medicalHistory = JSON.stringify(
+                        cleanData.medicalHistory || [],
+                    );
+                    updateData.weight = parseFloat(cleanData.weight) || 0;
                 }
 
                 await UserAPI.UpdateProfile(user!, updateData);
@@ -252,19 +289,11 @@
                     />
                 {/if}
                 <div class="profile-picture">
-                    {#if avatarUrl}
-                        <img
-                            src={avatarUrl}
-                            alt="Profile"
-                            class="avatar-image"
-                        />
-                    {:else}
-                        <div class="avatar-placeholder">
-                            {formData.firstName.value?.charAt(
-                                0,
-                            )}{formData.lastName.value?.charAt(0)}
-                        </div>
-                    {/if}
+                    <img
+                        src={avatarUrl || "/user-placeholder.png"}
+                        alt="Profile"
+                        class="avatar-image"
+                    />
                 </div>
                 {#if edit}
                     <div class="avatar-overlay">
@@ -401,6 +430,10 @@
                                                     value: "female",
                                                     label: "Female",
                                                 },
+                                                {
+                                                    value: "other",
+                                                    label: "Other",
+                                                },
                                             ]}
                                             placeholder="Select Gender"
                                         />
@@ -500,6 +533,47 @@
                                             .validator}
                                     />
                                 </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <Input
+                                            label="Consultation Price ($)"
+                                            showLabel
+                                            category={edit
+                                                ? "input"
+                                                : "display"}
+                                            type="number"
+                                            bind:value={
+                                                formData.consultationPrice.value
+                                            }
+                                            bind:error={
+                                                formData.consultationPrice.error
+                                            }
+                                            validation={formData
+                                                .consultationPrice.validator}
+                                        />
+                                    </div>
+                                    <div class="form-group">
+                                        <Input
+                                            label="Duration (min)"
+                                            showLabel
+                                            category={edit
+                                                ? "input"
+                                                : "display"}
+                                            type="number"
+                                            bind:value={
+                                                formData.consultationDuration
+                                                    .value
+                                            }
+                                            bind:error={
+                                                formData.consultationDuration
+                                                    .error
+                                            }
+                                            validation={formData
+                                                .consultationDuration.validator}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         {/if}
 
@@ -508,29 +582,26 @@
                                 <h3>Medical Information</h3>
                                 <div class="form-row">
                                     <div class="form-group">
-                                        {#if edit}
-                                            <Input
-                                                category="select"
-                                                label="Select Blood Type"
-                                                bind:value={
-                                                    formData.bloodType.value
-                                                }
-                                                bind:error={
-                                                    formData.bloodType.error
-                                                }
-                                                validation={formData.bloodType
-                                                    .validator}
-                                                options={bloodTypes.map(
-                                                    (b) => ({
-                                                        value: b,
-                                                        label: b,
-                                                    }),
-                                                )}
-                                                placeholder="Select Blood Type"
-                                            />
-                                        {:else}
-                                            {(user as Patient).bloodType}
-                                        {/if}
+                                        <Input
+                                            label="Blood Type"
+                                            showLabel
+                                            category={edit
+                                                ? "select"
+                                                : "display"}
+                                            bind:value={
+                                                formData.bloodType.value
+                                            }
+                                            bind:error={
+                                                formData.bloodType.error
+                                            }
+                                            validation={formData.bloodType
+                                                .validator}
+                                            options={bloodTypes.map((b) => ({
+                                                value: b,
+                                                label: b,
+                                            }))}
+                                            placeholder="Select Blood Type"
+                                        />
                                     </div>
 
                                     <div class="form-group">
@@ -553,6 +624,24 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <Input
+                                            label="Weight (kg)"
+                                            showLabel
+                                            category={edit
+                                                ? "input"
+                                                : "display"}
+                                            type="number"
+                                            bind:value={formData.weight.value}
+                                            bind:error={formData.weight.error}
+                                            validation={formData.weight
+                                                .validator}
+                                        />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="allergies-input"
+                                            >Allergies</label
+                                        >
                                         <InputArray
                                             show={!edit}
                                             bind:value={
@@ -562,6 +651,9 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <label for="history-input"
+                                            >Medical History</label
+                                        >
                                         <InputArray
                                             show={!edit}
                                             bind:value={
@@ -725,6 +817,16 @@
 
     .form-group {
         margin-bottom: 1rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text-color, #2c3e50);
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
 
     .error {

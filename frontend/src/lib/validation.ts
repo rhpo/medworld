@@ -31,7 +31,7 @@ export function extract<T>(data: T): Sanitation<T> {
 
 export function validate(data: Fillable): string {
     let elementWithError = Object.values(data).find(element =>
-        [element.error, element.validator(element?.value)].some(thing => thing !== ''));
+        [element.error, element.validator && element.validator(element?.value)].some(thing => thing !== ''));
 
     if (elementWithError === undefined) {
         return "";

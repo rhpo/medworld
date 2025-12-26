@@ -31,9 +31,6 @@
     onMount(async () => {
         scrollHandler();
         AOS.init();
-
-        // Load all data from backend on app startup
-        await loadAllData();
     });
 </script>
 

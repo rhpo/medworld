@@ -16,6 +16,7 @@
         rows?: number;
         min?: string;
         max?: string;
+        focused?: boolean;
         validation?: (value: any) => string | null;
         onInput?: any;
         [key: string]: any;
@@ -35,6 +36,7 @@
         name = "",
         options = [],
         disabled = false,
+        focused = $bindable(false),
         rows = 4,
         min = "",
         max = "",
@@ -87,10 +89,19 @@
         validate();
     }
 
+    $effect(() => {
+        inputElement?.addEventListener("focus", () => {
+            focused = true;
+        });
+        inputElement?.addEventListener("blur", () => {
+            focused = false;
+        });
+    });
+
     export { validate };
 </script>
 
-<main class:disabled>
+<main class:disabled class={theme === "symbollic" ? "symbollic" : ""}>
     {#if label && showLabel}
         <label for={label.toLowerCase().replace(/\s+/g, "-")}>
             {label}
@@ -103,7 +114,7 @@
             bind:this={inputElement}
             class="input"
             id={label.toLowerCase().replace(/\s+/g, "-")}
-            bind:value
+            {value}
             class:primary={theme === "primary"}
             class:secondary={theme === "secondary"}
             class:nothing={theme === "nothing"}
@@ -122,7 +133,7 @@
             bind:this={inputElement}
             class="input"
             id={label.toLowerCase().replace(/\s+/g, "-")}
-            bind:value
+            {value}
             class:primary={theme === "primary"}
             class:secondary={theme === "secondary"}
             class:none={theme === "nothing"}
@@ -150,7 +161,7 @@
             class:primary={theme === "primary"}
             class:secondary={theme === "secondary"}
             class:none={theme === "nothing"}
-            bind:value
+            {value}
             {placeholder}
             oninput={handleInput}
             onblur={handleBlur}
@@ -258,6 +269,10 @@
         background: var(--background-secondary);
         border: none !important;
         outline: none;
+    }
+
+    main.symbollic {
+        margin-bottom: 0;
     }
 
     .input.error {

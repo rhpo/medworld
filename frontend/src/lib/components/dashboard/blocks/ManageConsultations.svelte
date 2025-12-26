@@ -88,7 +88,7 @@
     function deleteConsultation(consultation: Consultation) {
         if (
             confirm(
-                `Are you sure you want to delete this consultation for ${consultation.patient.getFullName()}?`,
+                `Are you sure you want to delete this consultation for ${consultation.patient.fullName}?`,
             )
         ) {
             consultations = consultations.filter(
@@ -105,11 +105,11 @@
             const searchTerm = searchQuery.toLowerCase();
             return (
                 consultation.patient
-                    .getFullName()
+                    .fullName
                     .toLowerCase()
                     .includes(searchTerm) ||
                 consultation.doctor
-                    .getFullName()
+                    .fullName
                     .toLowerCase()
                     .includes(searchTerm) ||
                 consultation.notes.toLowerCase().includes(searchTerm) ||
@@ -146,10 +146,10 @@
                     <Avatar
                         size="60px"
                         avatarUrl={selectedConsultation.patient.avatarUrl}
-                        alt={selectedConsultation.patient.getFullName()}
+                        alt={selectedConsultation.patient.fullName}
                     />
                     <div class="patient-details">
-                        <h3>{selectedConsultation.patient.getFullName()}</h3>
+                        <h3>{selectedConsultation.patient.fullName}</h3>
                         <div class="meta-info">
                             <span class="meta-item">
                                 <Calendar size={16} />
@@ -157,7 +157,7 @@
                             </span>
                             <span class="meta-item">
                                 <User size={16} />
-                                Dr. {selectedConsultation.doctor.getFullName()}
+                                Dr. {selectedConsultation.doctor.fullName}
                             </span>
                         </div>
                     </div>
@@ -290,10 +290,10 @@
                                             size="36px"
                                             avatarUrl={consultation.patient
                                                 .avatarUrl}
-                                            alt={consultation.patient.getFullName()}
+                                            alt={consultation.patient.fullName}
                                         />
                                         <span class="patient-name"
-                                            >{consultation.patient.getFullName()}</span
+                                            >{consultation.patient.fullName}</span
                                         >
                                     </div>
                                 </td>

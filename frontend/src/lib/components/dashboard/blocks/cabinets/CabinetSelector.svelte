@@ -14,65 +14,55 @@
     import { scale } from "svelte/transition";
 
     let {
-        selectedCabinet = $bindable(null),
+        onSelect = (cabinet: Cabinet) => {},
         user,
     }: {
-        selectedCabinet: Cabinet | null;
+        onSelect: (cabinet: Cabinet) => void;
         user: IUser;
     } = $props();
 
-    let cabinets: Cabinet[] = $derived($cabinetsStore);
     let search: string = $state("");
 
     onMount(async () => {
-        // Load cabinets from API if not already loaded
         if ($cabinetsStore.length === 0) {
             await loadAllCabinets();
         }
-
-        // Filter cabinets based on user type
-        switch (user.type) {
-            case "superadmin":
-                cabinets = $cabinetsStore;
-                break;
-            case "doctor":
-                cabinets = (user as Doctor).cabinet
-                    ? [(user as Doctor).cabinet]
-                    : $cabinetsStore;
-                break;
-            case "admin":
-                cabinets = (user as Admin).cabinet
-                    ? [(user as Admin).cabinet]
-                    : $cabinetsStore;
-                break;
-            default:
-                cabinets = [];
-        }
     });
 
-    function searchCabinet(cabinets: Cabinet[], query: string): Cabinet[] {
-        let result = cabinets;
-        if (result.length > 0) {
-            query = query.toLowerCase().trim();
+    let displayedCabinets = $derived.by(() => {
+        let list = $cabinetsStore;
+        console.log("CabinetSelector: Filtering with search:", search);
 
-            result = result.filter((cabinet) => {
-                if (
-                    cabinet.name.toLowerCase().includes(query) ||
-                    cabinet.doctors
-                        .map((d) => d.getFullName().toLowerCase())
-                        .includes(query) ||
-                    cabinet.doctors.some((d) =>
-                        query.includes(d.speciality.toLowerCase()),
-                    ) ||
-                    cabinet.location.address.toLowerCase().includes(query)
-                ) {
-                    return true;
-                } else return false;
+        // 1. Filter by Permissions
+        if (user.type !== "superadmin") {
+            const cabinetId = (user as any).cabinet?.id;
+            if (cabinetId) {
+                list = list.filter((c) => c.id === cabinetId);
+            }
+        }
+
+        // 2. Filter by Search
+        const query = search.toLowerCase().trim();
+        if (query) {
+            list = list.filter((cabinet) => {
+                const nameMatch = cabinet.name?.toLowerCase().includes(query);
+                const addressMatch = cabinet.location?.address
+                    ?.toLowerCase()
+                    .includes(query);
+                const doctorMatch = cabinet.doctors?.some((d) => {
+                    const fullName =
+                        `${d.firstName || ""} ${d.lastName || ""}`.toLowerCase();
+                    const speciality = d.speciality?.toLowerCase() || "";
+                    return (
+                        fullName.includes(query) || speciality.includes(query)
+                    );
+                });
+                return nameMatch || addressMatch || doctorMatch;
             });
         }
 
-        return result;
-    }
+        return list;
+    });
 </script>
 
 <div class="cabinet-selector">
@@ -84,16 +74,13 @@
         />
     </div>
 
-    {#if cabinets.length === 0}
+    {#if displayedCabinets.length === 0}
         <pre
             style="text-align: center; font-size: 2rem;">No cabinets found.</pre>
     {:else}
         <div class="cabinets-grid">
-            {#each searchCabinet(cabinets, search) as cabinet}
-                <button
-                    onclick={() => (selectedCabinet = cabinet)}
-                    transition:scale
-                >
+            {#each displayedCabinets as cabinet (cabinet.id)}
+                <button onclick={() => onSelect(cabinet)} transition:scale>
                     <CabinetCard {cabinet} />
                 </button>
             {/each}

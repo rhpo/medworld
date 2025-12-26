@@ -38,7 +38,7 @@ export interface User<T extends UserType> {
   phoneNumber: string;
   avatarUrl?: string;
 
-  getFullName(): string;
+  fullName: string;
 }
 
 export type AnyUser = User<any>;
