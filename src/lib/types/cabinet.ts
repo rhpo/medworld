@@ -41,6 +41,9 @@ export interface Cabinet {
 
 }
 
+/**
+ * Calculates the distance between a cabinet and a user's location.
+ */
 export function calculateDistance(
     cabinet: Cabinet,
     userLocation: { latitude: number; longitude: number, [key: string]: any }
@@ -58,6 +61,9 @@ export function calculateDistance(
     return R * c;
 }
 
+/**
+ * Determines if the cabinet is open based on a random condition.
+ */
 export function isCabinetOpen(cabinet: Cabinet, date: Date = new Date()): boolean {
     return Math.random() > 0.8;
 }
